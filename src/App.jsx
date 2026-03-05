@@ -37,99 +37,113 @@ function App() {
 
   const isCountdown = timer.phase === 'countdown' && settings.countdown > 0
 
-  const wrapperClass = useMemo(() => {
-    if (!timer.isRunning) return 'mx-auto max-w-3xl p-4 sm:p-8'
-    if (settings.gymMode) return 'min-h-screen px-2 py-6'
-    return 'min-h-screen p-4 sm:p-8'
-  }, [settings.gymMode, timer.isRunning])
+  const appClass = useMemo(() => {
+    if (timer.activeView === 'timer') {
+      return settings.gymMode ? 'min-h-screen bg-black text-white px-3 py-4' : 'min-h-screen bg-gymbg text-white px-3 py-4'
+    }
+    return 'min-h-screen bg-gymbg text-white px-3 py-4'
+  }, [settings.gymMode, timer.activeView])
 
   return (
-    <main className="min-h-screen bg-gymbg text-white">
-      <div className={wrapperClass}>
-        <AnimatePresence mode="wait">
-          {timer.activeView === 'config' ? (
-            <div key="config" className="space-y-6">
-              <h1 className="text-3xl font-black sm:text-4xl">TimerSport</h1>
-              <PresetButtons selected={settings.preset} onSelect={onPreset} />
+    <main className={appClass}>
+      <AnimatePresence mode="wait">
+        {timer.activeView === 'config' ? (
+          <div key="config" className="mx-auto flex min-h-screen w-full max-w-md flex-col gap-4 pb-4">
+            <header className="space-y-1 pt-1">
+              <h1 className="text-2xl font-black tracking-tight">TimerSport</h1>
+              <p className="text-sm text-zinc-400">Mobile CrossFit interval timer</p>
+            </header>
 
-              <section className="grid gap-3 rounded-2xl border border-zinc-800 p-4 sm:grid-cols-3">
-                {[
-                  { key: 'work', label: 'Work (s)', min: 1, max: 600 },
-                  { key: 'rest', label: 'Rest (s)', min: 0, max: 600 },
-                  { key: 'rounds', label: 'Rounds', min: 1, max: 100 },
-                ].map((item) => (
-                  <label key={item.key} className="space-y-2 text-sm font-medium text-zinc-300">
-                    {item.label}
-                    <input
-                      type="number"
-                      className="w-full rounded-xl border border-zinc-700 bg-zinc-900 px-4 py-3 text-2xl font-bold text-white"
-                      value={settings[item.key]}
-                      onChange={setNum(item.key, item.min, item.max)}
-                    />
-                  </label>
+            <PresetButtons selected={settings.preset} onSelect={onPreset} />
+
+            <section className="grid grid-cols-1 gap-2 rounded-2xl border border-zinc-800 p-3">
+              {[
+                { key: 'work', label: 'WORK seconds', min: 1, max: 600 },
+                { key: 'rest', label: 'REST seconds', min: 0, max: 600 },
+                { key: 'rounds', label: 'ROUNDS', min: 1, max: 100 },
+              ].map((item) => (
+                <label key={item.key} className="space-y-1.5 text-xs font-semibold uppercase tracking-wide text-zinc-400">
+                  {item.label}
+                  <input
+                    type="number"
+                    className="h-12 w-full rounded-xl border border-zinc-700 bg-zinc-900 px-4 text-xl font-black text-white"
+                    value={settings[item.key]}
+                    onChange={setNum(item.key, item.min, item.max)}
+                  />
+                </label>
+              ))}
+            </section>
+
+            <section className="space-y-2 rounded-2xl border border-zinc-800 p-3">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400">Countdown</p>
+              <div className="grid grid-cols-4 gap-2">
+                {countdownOptions.map((c) => (
+                  <button
+                    key={c}
+                    type="button"
+                    onClick={() => setSettings((prev) => ({ ...prev, countdown: c }))}
+                    className={`min-h-11 rounded-xl px-2 text-sm font-black ${settings.countdown === c ? 'bg-white text-black' : 'bg-zinc-800 text-white'}`}
+                  >
+                    {c === 0 ? 'OFF' : `${c}s`}
+                  </button>
                 ))}
-              </section>
-
-              <section className="space-y-3 rounded-2xl border border-zinc-800 p-4">
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400">Countdown</p>
-                <div className="grid grid-cols-4 gap-2">
-                  {countdownOptions.map((c) => (
-                    <button
-                      key={c}
-                      type="button"
-                      onClick={() => setSettings((prev) => ({ ...prev, countdown: c }))}
-                      className={`rounded-xl px-2 py-3 text-sm font-bold ${settings.countdown === c ? 'bg-white text-black' : 'bg-zinc-800 text-white'}`}
-                    >
-                      {c === 0 ? 'OFF' : `${c}s`}
-                    </button>
-                  ))}
-                </div>
-              </section>
-
-              <section className="space-y-3 rounded-2xl border border-zinc-800 p-4">
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400">Options</p>
-                <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-                  {[
-                    ['voice', 'Voice cues'],
-                    ['beep', 'Beep sounds'],
-                    ['vibration', 'Vibration'],
-                    ['gymMode', 'Gym mode'],
-                  ].map(([key, label]) => (
-                    <button
-                      key={key}
-                      type="button"
-                      onClick={() => setSettings((prev) => ({ ...prev, [key]: !prev[key] }))}
-                      className={`rounded-xl border px-3 py-3 text-sm font-bold ${settings[key] ? 'border-work bg-work/20' : 'border-zinc-700'}`}
-                    >
-                      {label}
-                    </button>
-                  ))}
-                </div>
-              </section>
-
-              <div className="rounded-2xl border border-zinc-800 p-4">
-                <TimerDisplay phase="work" remaining={settings.work} round={1} rounds={settings.rounds} phaseDuration={settings.work} gymMode={settings.gymMode} rest={settings.rest} />
               </div>
+            </section>
 
+            <section className="space-y-2 rounded-2xl border border-zinc-800 p-3">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400">Options</p>
+              <div className="grid grid-cols-2 gap-2">
+                {[
+                  ['voice', 'Voice cues'],
+                  ['beep', 'Beep sounds'],
+                  ['vibration', 'Vibration'],
+                  ['gymMode', 'Gym mode'],
+                ].map(([key, label]) => (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => setSettings((prev) => ({ ...prev, [key]: !prev[key] }))}
+                    className={`min-h-11 rounded-xl border px-3 text-sm font-bold ${settings[key] ? 'border-work bg-work/20 text-white' : 'border-zinc-700 text-zinc-300'}`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </section>
+
+            <section className="flex-1 rounded-2xl border border-zinc-800 p-2">
+              <TimerDisplay phase="work" remaining={settings.work} round={1} rounds={settings.rounds} phaseDuration={settings.work} gymMode={settings.gymMode} rest={settings.rest} fullscreen={false} />
+            </section>
+
+            <TimerControls isRunning={timer.isRunning} isPaused={timer.isPaused} onStart={timer.start} onPause={timer.pause} onResume={timer.resume} onReset={timer.reset} />
+          </div>
+        ) : (
+          <div key="timer" className="mx-auto flex min-h-screen w-full max-w-md flex-col">
+            <div className="flex-1">
+              {isCountdown ? (
+                <div className="grid h-full place-items-center">
+                  <CountdownAnimation value={timer.remaining} />
+                </div>
+              ) : (
+                <TimerDisplay
+                  phase={timer.phase}
+                  remaining={timer.remaining}
+                  round={timer.round}
+                  rounds={settings.rounds}
+                  phaseDuration={timer.phaseDuration}
+                  gymMode={settings.gymMode}
+                  rest={settings.rest}
+                  fullscreen
+                />
+              )}
+            </div>
+
+            <div className="pb-3 pt-2">
               <TimerControls isRunning={timer.isRunning} isPaused={timer.isPaused} onStart={timer.start} onPause={timer.pause} onResume={timer.resume} onReset={timer.reset} />
             </div>
-          ) : (
-            <div key="timer" className="flex min-h-screen flex-col justify-between">
-              <div className="grid flex-1 place-items-center">
-                {isCountdown ? (
-                  <CountdownAnimation value={timer.remaining} />
-                ) : (
-                  <TimerDisplay phase={timer.phase} remaining={timer.remaining} round={timer.round} rounds={settings.rounds} phaseDuration={timer.phaseDuration} gymMode={settings.gymMode} rest={settings.rest} />
-                )}
-              </div>
-
-              <div className="mx-auto w-full max-w-xl pb-6">
-                <TimerControls isRunning={timer.isRunning} isPaused={timer.isPaused} onStart={timer.start} onPause={timer.pause} onResume={timer.resume} onReset={timer.reset} />
-              </div>
-            </div>
-          )}
-        </AnimatePresence>
-      </div>
+          </div>
+        )}
+      </AnimatePresence>
     </main>
   )
 }

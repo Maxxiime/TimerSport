@@ -4,47 +4,58 @@ import { formatTime } from '../lib/timerLogic'
 const MotionDiv = m.div
 const MotionCircle = m.circle
 
-export function TimerDisplay({ phase, remaining, round, rounds, phaseDuration, gymMode, rest }) {
-  const progress = Math.max(0, remaining / phaseDuration)
-  const radius = gymMode ? 180 : 135
+export function TimerDisplay({ phase, remaining, round, rounds, phaseDuration, gymMode, rest, fullscreen = false }) {
+  const safeDuration = Math.max(1, phaseDuration)
+  const progress = Math.max(0, remaining / safeDuration)
+  const size = fullscreen ? 'min(92vw, 68vh)' : 'min(82vw, 48vh)'
+  const radius = 150
+  const center = 168
   const circumference = 2 * Math.PI * radius
   const stateColor = phase === 'work' ? '#22c55e' : phase === 'rest' ? '#3b82f6' : '#ffffff'
   const warning = remaining <= 5 && phase !== 'countdown'
+  const activeColor = warning ? '#ef4444' : stateColor
   const nextState = phase === 'work' ? (rest > 0 ? 'REST' : 'WORK') : 'WORK'
 
   return (
-    <div className="flex flex-col items-center justify-center gap-4 text-center">
-      <p className="text-sm font-semibold uppercase tracking-[0.2em] text-zinc-400">Round {round} / {rounds}</p>
+    <div className={`flex h-full flex-col items-center justify-center text-center ${fullscreen ? 'gap-5' : 'gap-3'}`}>
+      <p className={`font-black uppercase tracking-[0.2em] text-zinc-400 ${fullscreen ? 'text-base' : 'text-xs'}`}>
+        ROUND {round} / {rounds}
+      </p>
+
       <MotionDiv
-        animate={warning ? { scale: [1, 1.05, 1] } : { scale: 1 }}
-        transition={warning ? { repeat: Infinity, duration: 0.8 } : { duration: 0.2 }}
+        animate={warning ? { scale: [1, 1.03, 1], filter: ['drop-shadow(0 0 10px rgba(239,68,68,0.2))', 'drop-shadow(0 0 22px rgba(239,68,68,0.75))', 'drop-shadow(0 0 10px rgba(239,68,68,0.2))'] } : { scale: 1 }}
+        transition={warning ? { repeat: Infinity, duration: 0.95, ease: 'easeInOut' } : { duration: 0.2 }}
         className="relative grid place-items-center"
+        style={{ width: size, height: size }}
       >
-        <svg width={radius * 2 + 24} height={radius * 2 + 24} className="-rotate-90">
-          <circle cx={radius + 12} cy={radius + 12} r={radius} stroke="#27272a" strokeWidth="12" fill="none" />
+        <svg viewBox="0 0 336 336" className="h-full w-full -rotate-90">
+          <circle cx={center} cy={center} r={radius} stroke="#27272a" strokeWidth="24" fill="none" />
           <MotionCircle
-            cx={radius + 12}
-            cy={radius + 12}
+            cx={center}
+            cy={center}
             r={radius}
-            stroke={warning ? '#ef4444' : stateColor}
-            strokeWidth="14"
+            stroke={activeColor}
+            strokeWidth={gymMode ? 30 : 26}
             strokeLinecap="round"
             fill="none"
             initial={false}
-            animate={{ strokeDashoffset: circumference * (1 - progress) }}
-            transition={{ duration: 0.4, ease: 'linear' }}
+            animate={{ strokeDashoffset: circumference * (1 - progress), filter: warning ? 'drop-shadow(0 0 10px #ef4444)' : `drop-shadow(0 0 10px ${activeColor})` }}
+            transition={{ duration: 0.35, ease: 'linear' }}
             strokeDasharray={circumference}
           />
         </svg>
 
-        <MotionDiv className={`absolute ${warning ? 'text-warning drop-shadow-[0_0_24px_rgba(239,68,68,0.8)]' : ''}`}>
-          <p className={`${gymMode ? 'text-8xl' : 'text-7xl'} font-black tabular-nums leading-none text-white`}>{formatTime(remaining)}</p>
-          <p className={`mt-2 ${gymMode ? 'text-4xl' : 'text-2xl'} font-black tracking-wider`} style={{ color: warning ? '#ef4444' : stateColor }}>
+        <MotionDiv className="absolute">
+          <p className={`${gymMode ? 'text-[clamp(4.5rem,18vw,8.5rem)]' : 'text-[clamp(3.7rem,15vw,7rem)]'} font-black tabular-nums leading-none text-white`}>
+            {formatTime(remaining)}
+          </p>
+          <p className={`mt-2 font-black tracking-[0.24em] ${gymMode ? 'text-4xl' : 'text-2xl'}`} style={{ color: activeColor }}>
             {phase.toUpperCase()}
           </p>
         </MotionDiv>
       </MotionDiv>
-      <p className="text-lg font-semibold text-zinc-300">Next: {nextState}</p>
+
+      <p className={`${fullscreen ? 'text-xl' : 'text-base'} font-semibold text-zinc-300`}>Next: {nextState}</p>
     </div>
   )
 }
