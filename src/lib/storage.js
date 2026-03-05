@@ -1,10 +1,10 @@
 const KEY = 'timer-sport-settings-v1'
 
 export const defaultSettings = {
-  preset: 'tabata',
-  work: 20,
-  rest: 10,
-  rounds: 8,
+  preset: 'hiit3030',
+  work: 30,
+  rest: 30,
+  rounds: 10,
   countdown: 3,
   voice: false,
   beep: true,
