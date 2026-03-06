@@ -7,6 +7,21 @@ const languageVoices = {
   es: 'es-ES',
 }
 
+const phaseVoiceTranslations = {
+  en: {
+    work: 'Work',
+    rest: 'Rest',
+  },
+  fr: {
+    work: 'Travail',
+    rest: 'Repos',
+  },
+  es: {
+    work: 'Trabajo',
+    rest: 'Descanso',
+  },
+}
+
 export function useTimer(config, labels) {
   const { work, rest, rounds, countdown, voice, beep, language } = config
   const [isRunning, setIsRunning] = useState(false)
@@ -17,8 +32,10 @@ export function useTimer(config, labels) {
   const [round, setRound] = useState(1)
   const tickerRef = useRef(null)
   const voicesRef = useRef([])
+  const lastSpokenTickRef = useRef(null)
 
   const speechLocale = useMemo(() => languageVoices[language] || languageVoices.en, [language])
+  const phaseVoiceLabels = useMemo(() => phaseVoiceTranslations[language] || phaseVoiceTranslations.en, [language])
 
   const getVoiceForLocale = useCallback(
     (voices, locale) => {
@@ -87,6 +104,7 @@ export function useTimer(config, labels) {
 
   const reset = () => {
     clearInterval(tickerRef.current)
+    lastSpokenTickRef.current = null
     setIsRunning(false)
     setIsPaused(false)
     setActiveView('config')
@@ -107,6 +125,7 @@ export function useTimer(config, labels) {
     setIsRunning(true)
     setIsPaused(false)
     setRound(1)
+    lastSpokenTickRef.current = null
 
     if (window.speechSynthesis) {
       window.speechSynthesis.cancel()
@@ -121,7 +140,7 @@ export function useTimer(config, labels) {
     } else {
       setPhase('work')
       setRemaining(work)
-      speak(labels.voiceWork || labels.phaseWork)
+      speak(phaseVoiceLabels.work)
     }
   }
 
@@ -136,11 +155,20 @@ export function useTimer(config, labels) {
         if (prev > 1) {
           const nextSecond = prev - 1
 
+          if (voice && nextSecond > 0) {
+            const tickKey = `${phase}-${nextSecond}`
+            const shouldSpeakCountdown = phase === 'countdown'
+            const shouldSpeakIntervalFinalSeconds = (phase === 'work' || phase === 'rest') && nextSecond <= 5
+
+            if ((shouldSpeakCountdown || shouldSpeakIntervalFinalSeconds) && lastSpokenTickRef.current !== tickKey) {
+              speak(String(nextSecond))
+              lastSpokenTickRef.current = tickKey
+            }
+          }
+
           if (phase === 'countdown') {
-            speak(String(nextSecond))
             beepNow()
           } else if (nextSecond <= 5) {
-            speak(String(nextSecond))
             beepNow()
           }
 
@@ -148,7 +176,8 @@ export function useTimer(config, labels) {
         }
 
         if (phase === 'countdown') {
-          speak(labels.voiceGo || labels.phaseGo)
+          lastSpokenTickRef.current = null
+          speak(phaseVoiceLabels.work)
           beepNow()
           setPhase('work')
           return work
@@ -156,7 +185,8 @@ export function useTimer(config, labels) {
 
         const phaseAfter = nextPhase(phase, rest)
         if (phase === 'work' && phaseAfter === 'rest') {
-          speak(labels.voiceRest || labels.phaseRest)
+          lastSpokenTickRef.current = null
+          speak(phaseVoiceLabels.rest)
           beepNow()
           setPhase('rest')
           return rest
@@ -169,11 +199,13 @@ export function useTimer(config, labels) {
             setIsRunning(false)
             setIsPaused(false)
             setActiveView('config')
+            lastSpokenTickRef.current = null
             return countdown
           }
           setRound((r) => r + 1)
           setPhase('work')
-          speak(labels.voiceWork || labels.phaseWork)
+          lastSpokenTickRef.current = null
+          speak(phaseVoiceLabels.work)
           beepNow()
           return work
         }
@@ -183,7 +215,7 @@ export function useTimer(config, labels) {
     }, 1000)
 
     return () => clearInterval(tickerRef.current)
-  }, [isRunning, isPaused, phase, work, rest, rounds, countdown, round, beepNow, speak, labels])
+  }, [isRunning, isPaused, phase, work, rest, rounds, countdown, round, beepNow, speak, phaseVoiceLabels, voice, labels.workoutComplete])
 
   const phaseDuration = useMemo(() => {
     if (phase === 'countdown') return countdown || 1
