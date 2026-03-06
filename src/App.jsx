@@ -23,6 +23,8 @@ const languageFlags = {
 }
 
 function App() {
+  const [deferredPrompt, setDeferredPrompt] = useState(null)
+  const [isInstalled, setIsInstalled] = useState(window.matchMedia('(display-mode: standalone)').matches)
   const hashPreset = parseWorkoutFromHash(window.location.hash)
   const [settings, setSettings] = useState({ ...loadSettings(), ...hashPreset })
 
@@ -46,6 +48,33 @@ function App() {
   useEffect(() => {
     document.documentElement.classList.toggle('dark', settings.darkMode)
   }, [settings.darkMode])
+
+  useEffect(() => {
+    const onBeforeInstallPrompt = (event) => {
+      event.preventDefault()
+      setDeferredPrompt(event)
+    }
+
+    const onAppInstalled = () => {
+      setIsInstalled(true)
+      setDeferredPrompt(null)
+    }
+
+    window.addEventListener('beforeinstallprompt', onBeforeInstallPrompt)
+    window.addEventListener('appinstalled', onAppInstalled)
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', onBeforeInstallPrompt)
+      window.removeEventListener('appinstalled', onAppInstalled)
+    }
+  }, [])
+
+  const handleInstall = async () => {
+    if (!deferredPrompt) return
+    deferredPrompt.prompt()
+    await deferredPrompt.userChoice
+    setDeferredPrompt(null)
+  }
 
   const onPreset = (key) => {
     const preset = PRESETS[key]
@@ -112,6 +141,16 @@ function App() {
                 {label}
               </button>
             ))}
+
+            {!isInstalled && deferredPrompt && (
+              <button
+                type="button"
+                onClick={handleInstall}
+                className="rounded-full border border-emerald-400/60 bg-emerald-500/15 px-3 py-2 text-xs font-semibold text-emerald-300 transition hover:bg-emerald-500/25"
+              >
+                Install App
+              </button>
+            )}
           </div>
         </header>
 
