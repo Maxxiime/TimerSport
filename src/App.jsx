@@ -8,7 +8,13 @@ import { WheelNumberPicker } from './components/WheelNumberPicker'
 import { useTimer } from './hooks/useTimer'
 import { useWakeLock } from './hooks/useWakeLock'
 import { getTranslation, SUPPORTED_LANGUAGES } from './lib/i18n'
-import { loadSettings, saveSettings } from './lib/storage'
+import {
+  hasSavedThemePreference,
+  loadSettings,
+  saveLanguagePreference,
+  saveSettings,
+  saveThemePreference,
+} from './lib/storage'
 import { PRESETS } from './lib/timerLogic'
 import { createShareHash, parseWorkoutFromHash } from './lib/workoutParser'
 
@@ -33,11 +39,16 @@ function App() {
   useWakeLock(timer.isRunning)
 
   const onLanguageChange = (language) => {
+    saveLanguagePreference(language)
     setSettings((prev) => ({ ...prev, language, voiceLanguage: language }))
   }
 
   const toggleTheme = () => {
-    setSettings((prev) => ({ ...prev, darkMode: !prev.darkMode }))
+    setSettings((prev) => {
+      const darkMode = !prev.darkMode
+      saveThemePreference(darkMode)
+      return { ...prev, darkMode }
+    })
   }
 
   useEffect(() => {
@@ -48,6 +59,21 @@ function App() {
   useEffect(() => {
     document.documentElement.classList.toggle('dark', settings.darkMode)
   }, [settings.darkMode])
+
+  useEffect(() => {
+    const media = window.matchMedia('(prefers-color-scheme: dark)')
+
+    const onSystemThemeChange = (event) => {
+      if (hasSavedThemePreference()) return
+      setSettings((prev) => ({ ...prev, darkMode: event.matches }))
+    }
+
+    media.addEventListener('change', onSystemThemeChange)
+
+    return () => {
+      media.removeEventListener('change', onSystemThemeChange)
+    }
+  }, [])
 
   useEffect(() => {
     const onBeforeInstallPrompt = (event) => {

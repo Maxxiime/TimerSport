@@ -104,9 +104,21 @@ export const SUPPORTED_LANGUAGES = ['en', 'fr', 'es']
 
 export const detectLanguage = () => {
   if (typeof navigator === 'undefined') return 'en'
-  const locale = (navigator.language || navigator.languages?.[0] || 'en').toLowerCase()
-  const code = locale.split('-')[0]
-  return SUPPORTED_LANGUAGES.includes(code) ? code : 'en'
+
+  const locales = [
+    ...(Array.isArray(navigator.languages) ? navigator.languages : []),
+    navigator.language,
+  ]
+    .filter(Boolean)
+    .map((locale) => locale.toLowerCase())
+
+  const hasFrench = locales.some((locale) => locale.startsWith('fr'))
+  if (hasFrench) return 'fr'
+
+  const hasSpanish = locales.some((locale) => locale.startsWith('es'))
+  if (hasSpanish) return 'es'
+
+  return 'en'
 }
 
 export const getTranslation = (language) => TRANSLATIONS[language] || TRANSLATIONS.en
