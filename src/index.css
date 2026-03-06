@@ -166,6 +166,19 @@ html:not(.dark) .glass-card-light {
   background: rgba(255, 255, 255, 0.15);
 }
 
+.preset-chip-idle {
+  border-color: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.preset-chip-active {
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.2);
+  color: #f8fafc;
+  box-shadow: 0 10px 30px rgba(255, 255, 255, 0.14);
+}
+
 html:not(.dark) .app-select,
 html:not(.dark) .countdown-group,
 html:not(.dark) .timer-number-input {
@@ -194,4 +207,17 @@ html:not(.dark) .app-select:focus {
 
 html:not(.dark) .countdown-active {
   background: rgba(255, 255, 255, 0.52);
+}
+
+html:not(.dark) .preset-chip-idle {
+  border-color: rgba(148, 163, 184, 0.4);
+  background: rgba(255, 255, 255, 0.6);
+  color: rgba(15, 23, 42, 0.78);
+}
+
+html:not(.dark) .preset-chip-active {
+  border-color: rgba(59, 130, 246, 0.36);
+  background: rgba(59, 130, 246, 0.16);
+  color: #0f172a;
+  box-shadow: 0 8px 22px rgba(59, 130, 246, 0.18);
 }
