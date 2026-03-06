@@ -6,19 +6,30 @@ const SIDE_PADDING = ((VISIBLE_ROWS - 1) / 2) * ITEM_HEIGHT
 
 export function WheelNumberPicker({ label, value, min, max, onChange }) {
   const listRef = useRef(null)
+  const programmaticScrollRef = useRef(false)
   const values = useMemo(() => Array.from({ length: max - min + 1 }, (_, i) => min + i), [min, max])
 
   useEffect(() => {
     const container = listRef.current
     if (!container) return
 
-    const targetScroll = (value - min) * ITEM_HEIGHT
-    if (Math.abs(container.scrollTop - targetScroll) > 1) {
-      container.scrollTo({ top: targetScroll, behavior: 'smooth' })
-    }
-  }, [value, min])
+    const targetIndex = values.indexOf(value)
+    if (targetIndex < 0) return
+
+    const targetScroll = targetIndex * ITEM_HEIGHT
+    if (Math.abs(container.scrollTop - targetScroll) <= 1) return
+
+    programmaticScrollRef.current = true
+    container.scrollTo({ top: targetScroll, behavior: 'auto' })
+
+    requestAnimationFrame(() => {
+      programmaticScrollRef.current = false
+    })
+  }, [value, values])
 
   const updateValueFromScroll = () => {
+    if (programmaticScrollRef.current) return
+
     const container = listRef.current
     if (!container) return
 
