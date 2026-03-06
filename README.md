@@ -1,16 +1,43 @@
-# React + Vite
+# TimerSport
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Application React + Vite pour des entraînements chronométrés.
 
-Currently, two official plugins are available:
+## Prérequis
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Node.js 20+** (recommandé: Node 20 LTS)
+- npm 10+
 
-## React Compiler
+Ce projet dépend de paquets (`workbox-build`, `glob@11`, etc.) qui demandent Node 20 minimum.
+Avec Node 18, `npm` affiche des warnings `EBADENGINE`.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Installation
 
-## Expanding the ESLint configuration
+```bash
+npm ci
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Lancement en développement
+
+```bash
+npm run dev -- --host 0.0.0.0 --port 4000
+```
+
+## Build de production
+
+```bash
+npm run build
+```
+
+## Dépannage
+
+### Erreur console `content.js ... reading 'runtime'`
+
+Si l'erreur vient d'un fichier nommé `content.js` (sans chemin de votre projet), elle provient en général d'une **extension navigateur** injectée dans la page (pas de l'application TimerSport).
+
+Vérifications rapides:
+
+1. Ouvrir l'app en navigation privée **sans extensions**.
+2. Désactiver temporairement les extensions (adblock, wallet, traducteur, etc.).
+3. Tester dans un autre navigateur propre.
+
+Si l'erreur disparaît, le code de l'application n'est pas en cause.
