@@ -106,8 +106,8 @@ function App() {
                 key={key}
                 type="button"
                 onClick={() => setSettings((prev) => ({ ...prev, [key]: !prev[key] }))}
-                className={`rounded-full border px-3 py-2 text-xs font-semibold ${
-                  settings[key] ? 'border-white/30 bg-white/20 text-app-text' : 'border-white/10 bg-white/5 text-app-subtle'
+                className={`rounded-full border px-3 py-2 text-xs font-semibold transition ${
+                  settings[key] ? 'preset-chip-active text-app-text' : 'preset-chip-idle text-app-subtle'
                 }`}
               >
                 {label}
