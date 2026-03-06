@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { nextPhase } from '../lib/timerLogic'
 
-export function useTimer(config) {
+export function useTimer(config, labels) {
   const { work, rest, rounds, countdown, voice, beep, vibration } = config
   const [isRunning, setIsRunning] = useState(false)
   const [isPaused, setIsPaused] = useState(false)
@@ -70,7 +70,7 @@ export function useTimer(config) {
     } else {
       setPhase('work')
       setRemaining(work)
-      speak('WORK')
+      speak(labels.phaseWork)
     }
   }
 
@@ -92,7 +92,7 @@ export function useTimer(config) {
         }
 
         if (phase === 'countdown') {
-          speak('GO')
+          speak(labels.phaseGo)
           beepNow()
           vibrateNow(150)
           setPhase('work')
@@ -101,7 +101,7 @@ export function useTimer(config) {
 
         const phaseAfter = nextPhase(phase, rest)
         if (phase === 'work' && phaseAfter === 'rest') {
-          speak('REST')
+          speak(labels.phaseRest)
           beepNow()
           vibrateNow(140)
           setPhase('rest')
@@ -110,7 +110,7 @@ export function useTimer(config) {
 
         if (phase === 'rest' || (phase === 'work' && rest === 0)) {
           if (round >= rounds) {
-            speak('Workout complete')
+            speak(labels.workoutComplete)
             clearInterval(tickerRef.current)
             setIsRunning(false)
             setIsPaused(false)
@@ -119,7 +119,7 @@ export function useTimer(config) {
           }
           setRound((r) => r + 1)
           setPhase('work')
-          speak('WORK')
+          speak(labels.phaseWork)
           beepNow()
           vibrateNow(140)
           return work
@@ -130,7 +130,7 @@ export function useTimer(config) {
     }, 1000)
 
     return () => clearInterval(tickerRef.current)
-  }, [isRunning, isPaused, phase, work, rest, rounds, countdown, round, beepNow, speak, vibrateNow])
+  }, [isRunning, isPaused, phase, work, rest, rounds, countdown, round, beepNow, speak, vibrateNow, labels])
 
   const phaseDuration = useMemo(() => {
     if (phase === 'countdown') return countdown || 1

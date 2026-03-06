@@ -4,7 +4,7 @@ import { formatTime } from '../lib/timerLogic'
 const MotionDiv = m.div
 const MotionCircle = m.circle
 
-export function TimerDisplay({ phase, remaining, round, rounds, phaseDuration, gymMode, rest, fullscreen = false }) {
+export function TimerDisplay({ phase, remaining, round, rounds, phaseDuration, fullscreen = false, labels, darkMode }) {
   const safeDuration = Math.max(1, phaseDuration)
   const progress = Math.max(0, remaining / safeDuration)
   const size = fullscreen ? 'min(92vw, 68vh)' : 'min(82vw, 48vh)'
@@ -14,12 +14,13 @@ export function TimerDisplay({ phase, remaining, round, rounds, phaseDuration, g
   const stateColor = phase === 'work' ? '#22c55e' : phase === 'rest' ? '#3b82f6' : '#ffffff'
   const warning = remaining <= 5 && phase !== 'countdown'
   const activeColor = warning ? '#ef4444' : stateColor
-  const nextState = phase === 'work' ? (rest > 0 ? 'REST' : 'WORK') : 'WORK'
+
+  const phaseLabel = phase === 'work' ? labels.phaseWork : phase === 'rest' ? labels.phaseRest : labels.phaseGo
 
   return (
     <div className={`flex h-full flex-col items-center justify-center text-center ${fullscreen ? 'gap-5' : 'gap-3'}`}>
-      <p className={`font-black uppercase tracking-[0.2em] text-zinc-400 ${fullscreen ? 'text-base' : 'text-xs'}`}>
-        ROUND {round} / {rounds}
+      <p className={`font-black uppercase tracking-[0.2em] ${darkMode ? 'text-zinc-400' : 'text-zinc-600'} ${fullscreen ? 'text-base' : 'text-xs'}`}>
+        {labels.roundLabel} {round} / {rounds}
       </p>
 
       <MotionDiv
@@ -29,13 +30,13 @@ export function TimerDisplay({ phase, remaining, round, rounds, phaseDuration, g
         style={{ width: size, height: size }}
       >
         <svg viewBox="0 0 336 336" className="h-full w-full -rotate-90">
-          <circle cx={center} cy={center} r={radius} stroke="#27272a" strokeWidth="24" fill="none" />
+          <circle cx={center} cy={center} r={radius} stroke={darkMode ? '#27272a' : '#d4d4d8'} strokeWidth="24" fill="none" />
           <MotionCircle
             cx={center}
             cy={center}
             r={radius}
             stroke={activeColor}
-            strokeWidth={gymMode ? 30 : 26}
+            strokeWidth={26}
             strokeLinecap="round"
             fill="none"
             initial={false}
@@ -46,16 +47,14 @@ export function TimerDisplay({ phase, remaining, round, rounds, phaseDuration, g
         </svg>
 
         <MotionDiv className="absolute">
-          <p className={`${gymMode ? 'text-[clamp(4.5rem,18vw,8.5rem)]' : 'text-[clamp(3.7rem,15vw,7rem)]'} font-black tabular-nums leading-none text-white`}>
+          <p className={`${fullscreen ? 'text-[clamp(4.5rem,18vw,8.5rem)]' : 'text-[clamp(3.7rem,15vw,7rem)]'} font-black tabular-nums leading-none ${darkMode ? 'text-white' : 'text-zinc-900'}`}>
             {formatTime(remaining)}
           </p>
-          <p className={`mt-2 font-black tracking-[0.24em] ${gymMode ? 'text-4xl' : 'text-2xl'}`} style={{ color: activeColor }}>
-            {phase.toUpperCase()}
+          <p className={`mt-2 font-black tracking-[0.24em] ${fullscreen ? 'text-4xl' : 'text-2xl'}`} style={{ color: activeColor }}>
+            {phaseLabel}
           </p>
         </MotionDiv>
       </MotionDiv>
-
-      <p className={`${fullscreen ? 'text-xl' : 'text-base'} font-semibold text-zinc-300`}>Next: {nextState}</p>
     </div>
   )
 }

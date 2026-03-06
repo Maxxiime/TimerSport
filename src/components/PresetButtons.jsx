@@ -1,9 +1,9 @@
 import { PRESETS } from '../lib/timerLogic'
 
-export function PresetButtons({ selected, onSelect }) {
+export function PresetButtons({ selected, onSelect, title, darkMode }) {
   return (
     <div>
-      <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400">Presets</p>
+      <p className={`mb-2 text-xs font-semibold uppercase tracking-[0.2em] ${darkMode ? 'text-zinc-400' : 'text-zinc-600'}`}>{title}</p>
       <div className="flex flex-wrap gap-2">
         {Object.entries(PRESETS).map(([key, preset]) => (
           <button
@@ -11,7 +11,13 @@ export function PresetButtons({ selected, onSelect }) {
             type="button"
             onClick={() => onSelect(key)}
             className={`min-h-11 rounded-full border px-4 text-sm font-semibold transition ${
-              selected === key ? 'border-white bg-white text-black' : 'border-zinc-700 bg-zinc-900 text-zinc-200'
+              selected === key
+                ? darkMode
+                  ? 'border-white bg-white text-black'
+                  : 'border-zinc-900 bg-zinc-900 text-white'
+                : darkMode
+                  ? 'border-zinc-700 bg-zinc-900 text-zinc-200'
+                  : 'border-zinc-300 bg-white text-zinc-800'
             }`}
           >
             {preset.label}

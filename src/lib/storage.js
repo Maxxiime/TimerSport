@@ -1,4 +1,11 @@
-const KEY = 'timer-sport-settings-v1'
+import { detectLanguage } from './i18n'
+
+const KEY = 'timer-sport-settings-v2'
+
+const detectDarkMode = () => {
+  if (typeof window === 'undefined' || !window.matchMedia) return true
+  return window.matchMedia('(prefers-color-scheme: dark)').matches
+}
 
 export const defaultSettings = {
   preset: 'hiit3030',
@@ -9,7 +16,8 @@ export const defaultSettings = {
   voice: false,
   beep: true,
   vibration: true,
-  gymMode: false,
+  darkMode: detectDarkMode(),
+  language: detectLanguage(),
 }
 
 export const loadSettings = () => {
