@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { nextPhase } from '../lib/timerLogic'
 
 export function useTimer(config, labels) {
-  const { work, rest, rounds, countdown, voice, beep, voiceLanguage } = config
+  const { work, rest, rounds, countdown, voice, beep, language } = config
   const [isRunning, setIsRunning] = useState(false)
   const [isPaused, setIsPaused] = useState(false)
   const [activeView, setActiveView] = useState('config')
@@ -12,24 +12,24 @@ export function useTimer(config, labels) {
   const tickerRef = useRef(null)
 
   const speechLocale = useMemo(() => {
-    if (voiceLanguage === 'fr') return 'fr-FR'
-    if (voiceLanguage === 'es') return 'es-ES'
+    if (language === 'fr') return 'fr-FR'
+    if (language === 'es') return 'es-ES'
     return 'en-US'
-  }, [voiceLanguage])
+  }, [language])
 
   const speak = useCallback(
     (text) => {
       if (!voice || !window.speechSynthesis) return
       const utterance = new SpeechSynthesisUtterance(text)
       const voices = window.speechSynthesis.getVoices()
-      const matchingVoice = voices.find((item) => item.lang?.toLowerCase().startsWith(voiceLanguage))
+      const matchingVoice = voices.find((item) => item.lang?.toLowerCase().startsWith(language))
       utterance.lang = speechLocale
       if (matchingVoice) utterance.voice = matchingVoice
       utterance.rate = 1
       window.speechSynthesis.cancel()
       window.speechSynthesis.speak(utterance)
     },
-    [voice, voiceLanguage, speechLocale],
+    [voice, language, speechLocale],
   )
 
   useEffect(() => {
