@@ -163,14 +163,25 @@ html:not(.dark) .glass-card-light {
 }
 
 .countdown-group,
-.timer-number-input {
+.quick-config-wheel {
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(0, 0, 0, 0.2);
 }
 
-.timer-number-input {
-  padding-top: 0;
-  padding-bottom: 0;
+.quick-config-wheel-wrapper {
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.quick-config-wheel-highlight {
+  height: 2.5rem;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.quick-config-wheel {
+  scroll-snap-type: y mandatory;
+  scrollbar-width: none;
 }
 
 .countdown-active {
@@ -192,9 +203,14 @@ html:not(.dark) .glass-card-light {
 
 html:not(.dark) .app-select,
 html:not(.dark) .countdown-group,
-html:not(.dark) .timer-number-input {
+html:not(.dark) .quick-config-wheel {
   border-color: rgba(148, 163, 184, 0.42);
   background: rgba(15, 23, 42, 0.12);
+}
+
+html:not(.dark) .quick-config-wheel-highlight {
+  background: rgba(255, 255, 255, 0.7);
+  border-color: rgba(148, 163, 184, 0.42);
 }
 
 html:not(.dark) .app-select {

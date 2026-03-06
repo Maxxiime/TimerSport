@@ -4,6 +4,7 @@ import { CountdownAnimation } from './components/CountdownAnimation'
 import { PresetButtons } from './components/PresetButtons'
 import { TimerControls } from './components/TimerControls'
 import { TimerDisplay } from './components/TimerDisplay'
+import { WheelNumberPicker } from './components/WheelNumberPicker'
 import { useTimer } from './hooks/useTimer'
 import { useWakeLock } from './hooks/useWakeLock'
 import { getTranslation, SUPPORTED_LANGUAGES } from './lib/i18n'
@@ -51,9 +52,7 @@ function App() {
     setSettings((prev) => ({ ...prev, preset: key, work: preset.work, rest: preset.rest, rounds: preset.rounds }))
   }
 
-  const setNum = (key, min, max) => (e) => {
-    const raw = Number(e.target.value)
-    const value = Number.isNaN(raw) ? min : Math.max(min, Math.min(max, Math.floor(raw)))
+  const setWheelValue = (key) => (value) => {
     setSettings((prev) => ({ ...prev, preset: 'custom', [key]: value }))
   }
 
@@ -129,15 +128,14 @@ function App() {
                     { key: 'rest', label: labels.restSeconds, min: 0, max: 600 },
                     { key: 'rounds', label: labels.rounds, min: 1, max: 100 },
                   ].map((item) => (
-                    <label key={item.key} className="flex flex-col gap-2">
-                      <span className="block text-[10px] font-semibold uppercase tracking-[0.2em] text-app-muted">{item.label}</span>
-                      <input
-                        type="number"
-                        className="timer-number-input h-12 w-full rounded-2xl px-3 text-center text-2xl font-extrabold leading-none text-app-text outline-none [font-variant-numeric:tabular-nums]"
-                        value={settings[item.key]}
-                        onChange={setNum(item.key, item.min, item.max)}
-                      />
-                    </label>
+                    <WheelNumberPicker
+                      key={item.key}
+                      label={item.label}
+                      value={settings[item.key]}
+                      min={item.min}
+                      max={item.max}
+                      onChange={setWheelValue(item.key)}
+                    />
                   ))}
                 </div>
               </MotionSection>
