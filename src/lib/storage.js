@@ -10,7 +10,7 @@ const detectDarkMode = () => {
 const defaultLanguage = detectLanguage()
 
 export const defaultSettings = {
-  preset: 'hiit3030',
+  preset: 'hiit30',
   work: 30,
   rest: 30,
   rounds: 10,
