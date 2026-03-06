@@ -116,8 +116,39 @@ html:not(.dark) .glass-card-light {
 }
 
 .app-select {
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(0, 0, 0, 0.2);
+  appearance: none;
+  min-width: 112px;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  background: linear-gradient(160deg, rgba(15, 23, 42, 0.48), rgba(30, 41, 59, 0.2));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 10px 20px rgba(2, 6, 23, 0.2);
+}
+
+.app-select:hover {
+  border-color: rgba(125, 211, 252, 0.42);
+}
+
+.app-select:focus {
+  border-color: rgba(96, 165, 250, 0.85);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 0 0 3px rgba(59, 130, 246, 0.22);
+}
+
+.language-select-wrap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 0.5rem;
+  pointer-events: none;
+  background: linear-gradient(120deg, rgba(96, 165, 250, 0.16), rgba(16, 185, 129, 0.12));
+  opacity: 0;
+  transition: opacity 150ms ease;
+}
+
+.language-select-wrap:hover::before {
+  opacity: 1;
 }
 
 .countdown-group,
@@ -140,6 +171,25 @@ html:not(.dark) .countdown-group,
 html:not(.dark) .timer-number-input {
   border-color: rgba(148, 163, 184, 0.42);
   background: rgba(15, 23, 42, 0.12);
+}
+
+html:not(.dark) .app-select {
+  border-color: rgba(148, 163, 184, 0.5);
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.96), rgba(241, 245, 249, 0.9));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.92),
+    0 8px 18px rgba(148, 163, 184, 0.25);
+}
+
+html:not(.dark) .app-select:hover {
+  border-color: rgba(56, 189, 248, 0.56);
+}
+
+html:not(.dark) .app-select:focus {
+  border-color: rgba(59, 130, 246, 0.7);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    0 0 0 3px rgba(59, 130, 246, 0.16);
 }
 
 html:not(.dark) .countdown-active {
