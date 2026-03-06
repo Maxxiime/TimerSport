@@ -8,11 +8,12 @@ Application React + Vite pour des entraînements chronométrés.
 - npm 10+
 
 Ce projet dépend de paquets (`workbox-build`, `glob@11`, etc.) qui demandent Node 20 minimum.
-Avec Node 18, `npm` affiche des warnings `EBADENGINE`.
+Avec Node 18, l'installation est maintenant bloquée automatiquement avec un message explicite.
 
 ## Installation
 
 ```bash
+nvm use   # lit .nvmrc (Node 20)
 npm ci
 ```
 
