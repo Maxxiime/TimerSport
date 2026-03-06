@@ -10,6 +10,7 @@ export function useTimer(config, labels) {
   const [remaining, setRemaining] = useState(countdown)
   const [round, setRound] = useState(1)
   const tickerRef = useRef(null)
+  const voicesRef = useRef([])
 
   const speechLocale = useMemo(() => {
     if (language === 'fr') return 'fr-FR'
@@ -17,31 +18,54 @@ export function useTimer(config, labels) {
     return 'en-US'
   }, [language])
 
+  const getVoiceForLocale = useCallback(
+    (voices, locale) => {
+      if (!voices.length) return null
+      const exact = voices.find((item) => item.lang?.toLowerCase() === locale.toLowerCase())
+      if (exact) return exact
+
+      const shortCode = locale.split('-')[0].toLowerCase()
+      return voices.find((item) => item.lang?.toLowerCase().startsWith(shortCode)) || null
+    },
+    [],
+  )
+
   const speak = useCallback(
-    (text) => {
+    (text, { interrupt = true } = {}) => {
       if (!voice || !window.speechSynthesis) return
-      const utterance = new SpeechSynthesisUtterance(text)
-      const voices = window.speechSynthesis.getVoices()
-      const matchingVoice = voices.find((item) => item.lang?.toLowerCase().startsWith(language))
+      const utterance = new SpeechSynthesisUtterance(String(text))
+      const voices = voicesRef.current.length ? voicesRef.current : window.speechSynthesis.getVoices()
+      const matchingVoice = getVoiceForLocale(voices, speechLocale)
+
       utterance.lang = speechLocale
       if (matchingVoice) utterance.voice = matchingVoice
       utterance.rate = 1
-      window.speechSynthesis.cancel()
+
+      if (interrupt) window.speechSynthesis.cancel()
       window.speechSynthesis.speak(utterance)
     },
-    [voice, language, speechLocale],
+    [voice, speechLocale, getVoiceForLocale],
   )
 
   useEffect(() => {
     if (!window.speechSynthesis) return
-    window.speechSynthesis.getVoices()
-    const onVoicesChanged = () => window.speechSynthesis.getVoices()
-    window.speechSynthesis.addEventListener('voiceschanged', onVoicesChanged)
+
+    const hydrateVoices = () => {
+      voicesRef.current = window.speechSynthesis.getVoices()
+    }
+
+    hydrateVoices()
+    window.speechSynthesis.addEventListener('voiceschanged', hydrateVoices)
 
     return () => {
-      window.speechSynthesis.removeEventListener('voiceschanged', onVoicesChanged)
+      window.speechSynthesis.removeEventListener('voiceschanged', hydrateVoices)
     }
   }, [])
+
+  useEffect(() => {
+    if (!window.speechSynthesis) return
+    voicesRef.current = window.speechSynthesis.getVoices()
+  }, [speechLocale])
 
   const beepNow = useCallback(() => {
     if (!beep) return
@@ -84,7 +108,7 @@ export function useTimer(config, labels) {
     } else {
       setPhase('work')
       setRemaining(work)
-      speak(labels.phaseWork)
+      speak(labels.voiceWork || labels.phaseWork)
     }
   }
 
@@ -99,13 +123,13 @@ export function useTimer(config, labels) {
         if (prev > 1) {
           if (prev <= 6) {
             beepNow()
-            speak(String(prev - 1))
+            speak(String(prev - 1), { interrupt: false })
           }
           return prev - 1
         }
 
         if (phase === 'countdown') {
-          speak(labels.phaseGo)
+          speak(labels.voiceGo || labels.phaseGo)
           beepNow()
           setPhase('work')
           return work
@@ -113,7 +137,7 @@ export function useTimer(config, labels) {
 
         const phaseAfter = nextPhase(phase, rest)
         if (phase === 'work' && phaseAfter === 'rest') {
-          speak(labels.phaseRest)
+          speak(labels.voiceRest || labels.phaseRest)
           beepNow()
           setPhase('rest')
           return rest
@@ -130,7 +154,7 @@ export function useTimer(config, labels) {
           }
           setRound((r) => r + 1)
           setPhase('work')
-          speak(labels.phaseWork)
+          speak(labels.voiceWork || labels.phaseWork)
           beepNow()
           return work
         }
