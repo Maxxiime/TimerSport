@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { nextPhase } from '../lib/timerLogic'
 
 export function useTimer(config, labels) {
-  const { work, rest, rounds, countdown, voice, beep, vibration, language } = config
+  const { work, rest, rounds, countdown, voice, beep, voiceLanguage } = config
   const [isRunning, setIsRunning] = useState(false)
   const [isPaused, setIsPaused] = useState(false)
   const [activeView, setActiveView] = useState('config')
@@ -12,24 +12,24 @@ export function useTimer(config, labels) {
   const tickerRef = useRef(null)
 
   const speechLocale = useMemo(() => {
-    if (language === 'fr') return 'fr-FR'
-    if (language === 'es') return 'es-ES'
+    if (voiceLanguage === 'fr') return 'fr-FR'
+    if (voiceLanguage === 'es') return 'es-ES'
     return 'en-US'
-  }, [language])
+  }, [voiceLanguage])
 
   const speak = useCallback(
     (text) => {
       if (!voice || !window.speechSynthesis) return
       const utterance = new SpeechSynthesisUtterance(text)
       const voices = window.speechSynthesis.getVoices()
-      const matchingVoice = voices.find((item) => item.lang?.toLowerCase().startsWith(language))
+      const matchingVoice = voices.find((item) => item.lang?.toLowerCase().startsWith(voiceLanguage))
       utterance.lang = speechLocale
       if (matchingVoice) utterance.voice = matchingVoice
       utterance.rate = 1
       window.speechSynthesis.cancel()
       window.speechSynthesis.speak(utterance)
     },
-    [voice, language, speechLocale],
+    [voice, voiceLanguage, speechLocale],
   )
 
   useEffect(() => {
@@ -55,13 +55,6 @@ export function useTimer(config, labels) {
     oscillator.start()
     oscillator.stop(ctx.currentTime + 0.12)
   }, [beep])
-
-  const vibrateNow = useCallback(
-    (duration = 120) => {
-      if (vibration && navigator.vibrate) navigator.vibrate(duration)
-    },
-    [vibration],
-  )
 
   const reset = () => {
     clearInterval(tickerRef.current)
@@ -106,7 +99,6 @@ export function useTimer(config, labels) {
         if (prev > 1) {
           if (prev <= 6) {
             beepNow()
-            vibrateNow(80)
             speak(String(prev - 1))
           }
           return prev - 1
@@ -115,7 +107,6 @@ export function useTimer(config, labels) {
         if (phase === 'countdown') {
           speak(labels.phaseGo)
           beepNow()
-          vibrateNow(150)
           setPhase('work')
           return work
         }
@@ -124,7 +115,6 @@ export function useTimer(config, labels) {
         if (phase === 'work' && phaseAfter === 'rest') {
           speak(labels.phaseRest)
           beepNow()
-          vibrateNow(140)
           setPhase('rest')
           return rest
         }
@@ -142,7 +132,6 @@ export function useTimer(config, labels) {
           setPhase('work')
           speak(labels.phaseWork)
           beepNow()
-          vibrateNow(140)
           return work
         }
 
@@ -151,7 +140,7 @@ export function useTimer(config, labels) {
     }, 1000)
 
     return () => clearInterval(tickerRef.current)
-  }, [isRunning, isPaused, phase, work, rest, rounds, countdown, round, beepNow, speak, vibrateNow, labels])
+  }, [isRunning, isPaused, phase, work, rest, rounds, countdown, round, beepNow, speak, labels])
 
   const phaseDuration = useMemo(() => {
     if (phase === 'countdown') return countdown || 1
