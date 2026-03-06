@@ -114,3 +114,34 @@ html:not(.dark) .glass-card-light {
     opacity: 1;
   }
 }
+
+.app-select {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.countdown-group,
+.timer-number-input {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.timer-number-input {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.countdown-active {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+html:not(.dark) .app-select,
+html:not(.dark) .countdown-group,
+html:not(.dark) .timer-number-input {
+  border-color: rgba(148, 163, 184, 0.42);
+  background: rgba(15, 23, 42, 0.12);
+}
+
+html:not(.dark) .countdown-active {
+  background: rgba(255, 255, 255, 0.52);
+}

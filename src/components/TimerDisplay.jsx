@@ -4,7 +4,7 @@ import { formatTime, nextPhase } from '../lib/timerLogic'
 const MotionDiv = motion.div
 const MotionCircle = motion.circle
 
-export function TimerDisplay({ phase, remaining, round, rounds, phaseDuration, work, rest, fullscreen = false, labels }) {
+export function TimerDisplay({ phase, remaining, round, rounds, phaseDuration, work, rest, fullscreen = false, darkMode = true, labels }) {
   const safeDuration = Math.max(1, phaseDuration)
   const progress = Math.max(0, remaining / safeDuration)
   const radius = fullscreen ? 154 : 126
@@ -21,9 +21,17 @@ export function TimerDisplay({ phase, remaining, round, rounds, phaseDuration, w
 
   const ringGradient = warning ? 'url(#ringWarning)' : phase === 'work' ? 'url(#ringWork)' : 'url(#ringRest)'
 
+  const darkPalette = fullscreen || darkMode
+  const ringTrack = darkPalette ? 'rgba(255,255,255,0.08)' : 'rgba(15,23,42,0.12)'
+  const glassCenter = darkPalette ? 'bg-white/[0.04]' : 'bg-slate-900/[0.04]'
+  const roundText = darkPalette ? 'text-white/55' : 'text-slate-700/70'
+  const timerText = darkPalette ? 'text-white' : 'text-slate-900'
+  const phaseText = darkPalette ? 'text-white/80' : 'text-slate-800'
+  const nextText = darkPalette ? 'text-white/50' : 'text-slate-700/70'
+
   return (
     <div className={`flex w-full flex-col items-center justify-center text-center ${fullscreen ? 'gap-5' : 'gap-4'}`}>
-      <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/55">
+      <p className={`text-[11px] font-semibold uppercase tracking-[0.24em] ${roundText}`}>
         {labels.roundLabel} {round} / {rounds}
       </p>
 
@@ -33,7 +41,7 @@ export function TimerDisplay({ phase, remaining, round, rounds, phaseDuration, w
         className="relative grid place-items-center"
         style={{ width: fullscreen ? 'min(88vw, 64vh)' : 'min(68vw, 40vh)', height: fullscreen ? 'min(88vw, 64vh)' : 'min(68vw, 40vh)' }}
       >
-        <div className="absolute inset-0 rounded-full bg-white/[0.04] backdrop-blur-xl" />
+        <div className={`absolute inset-0 rounded-full ${glassCenter} backdrop-blur-xl`} />
         <svg viewBox={`0 0 ${viewBox} ${viewBox}`} className="h-full w-full -rotate-90">
           <defs>
             <linearGradient id="ringWork" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -57,7 +65,7 @@ export function TimerDisplay({ phase, remaining, round, rounds, phaseDuration, w
             </filter>
           </defs>
 
-          <circle cx={center} cy={center} r={radius} stroke="rgba(255,255,255,0.08)" strokeWidth="14" fill="none" />
+          <circle cx={center} cy={center} r={radius} stroke={ringTrack} strokeWidth="14" fill="none" />
           <MotionCircle
             cx={center}
             cy={center}
@@ -80,12 +88,12 @@ export function TimerDisplay({ phase, remaining, round, rounds, phaseDuration, w
             initial={{ scale: 0.985 }}
             animate={{ scale: [0.985, 1.015, 1] }}
             transition={{ duration: 0.36, ease: 'easeOut' }}
-            className="text-[clamp(3.2rem,12vw,6.6rem)] font-extrabold leading-none tabular-nums text-white"
+            className={`text-[clamp(3.2rem,12vw,6.6rem)] font-extrabold leading-none tabular-nums ${timerText}`}
           >
             {formatTime(remaining)}
           </MotionDiv>
-          <p className="text-sm font-semibold uppercase tracking-[0.34em] text-white/80">{phaseLabel}</p>
-          <p className="text-xs font-medium text-white/50">
+          <p className={`text-sm font-semibold uppercase tracking-[0.34em] ${phaseText}`}>{phaseLabel}</p>
+          <p className={`text-xs font-medium ${nextText}`}>
             {labels.next}: {nextLabel} {nextTime > 0 ? `• ${formatTime(nextTime)}` : ''}
           </p>
         </div>

@@ -7,6 +7,8 @@ const detectDarkMode = () => {
   return window.matchMedia('(prefers-color-scheme: dark)').matches
 }
 
+const defaultLanguage = detectLanguage()
+
 export const defaultSettings = {
   preset: 'hiit3030',
   work: 30,
@@ -14,17 +16,18 @@ export const defaultSettings = {
   rounds: 10,
   countdown: 3,
   voice: false,
-  voiceLanguage: detectLanguage(),
+  voiceLanguage: defaultLanguage,
   beep: true,
   darkMode: detectDarkMode(),
-  language: detectLanguage(),
+  language: defaultLanguage,
 }
 
 export const loadSettings = () => {
   try {
     const raw = localStorage.getItem(KEY)
     if (!raw) return defaultSettings
-    return { ...defaultSettings, ...JSON.parse(raw) }
+    const parsed = { ...defaultSettings, ...JSON.parse(raw) }
+    return { ...parsed, voiceLanguage: parsed.language }
   } catch {
     return defaultSettings
   }

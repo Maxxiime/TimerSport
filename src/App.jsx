@@ -29,6 +29,14 @@ function App() {
   const timer = useTimer(settings, labels)
   useWakeLock(timer.isRunning)
 
+  const onLanguageChange = (language) => {
+    setSettings((prev) => ({ ...prev, language, voiceLanguage: language }))
+  }
+
+  const onThemeChange = (theme) => {
+    setSettings((prev) => ({ ...prev, darkMode: theme === 'dark' }))
+  }
+
   useEffect(() => {
     saveSettings(settings)
     window.history.replaceState(null, '', createShareHash(settings))
@@ -67,38 +75,34 @@ function App() {
           </div>
 
           <div className="grid grid-cols-2 gap-2">
-            <div className="glass-card-light flex flex-col gap-1 p-1.5">
-              {SUPPORTED_LANGUAGES.map((language) => (
-                <button
-                  key={language}
-                  type="button"
-                  onClick={() => setSettings((prev) => ({ ...prev, language }))}
-                  className={`rounded-lg px-2 py-1 text-lg leading-none transition ${
-                    settings.language === language ? 'bg-white/25' : 'opacity-65 hover:opacity-100'
-                  }`}
-                  aria-label={`${labels.language}: ${getTranslation(language).languageName}`}
-                >
-                  {languageFlags[language]}
-                </button>
-              ))}
-            </div>
+            <label className="glass-card-light flex min-w-[88px] flex-col gap-1 p-1.5">
+              <span className="px-1 text-[9px] font-semibold uppercase tracking-[0.2em] text-app-muted">{labels.language}</span>
+              <select
+                value={settings.language}
+                onChange={(e) => onLanguageChange(e.target.value)}
+                className="app-select h-8 rounded-lg px-2 text-xs font-semibold text-app-text outline-none transition"
+                aria-label={labels.language}
+              >
+                {SUPPORTED_LANGUAGES.map((language) => (
+                  <option key={language} value={language}>
+                    {languageFlags[language]} {getTranslation(language).languageName}
+                  </option>
+                ))}
+              </select>
+            </label>
 
-            <div className="glass-card-light flex flex-col gap-1 p-1.5">
-              <button
-                type="button"
-                onClick={() => setSettings((prev) => ({ ...prev, darkMode: true }))}
-                className={`rounded-lg px-2 py-1 text-xs font-semibold ${settings.darkMode ? 'bg-white/25' : 'opacity-65 hover:opacity-100'}`}
+            <label className="glass-card-light flex min-w-[88px] flex-col gap-1 p-1.5">
+              <span className="px-1 text-[9px] font-semibold uppercase tracking-[0.2em] text-app-muted">{labels.theme}</span>
+              <select
+                value={settings.darkMode ? 'dark' : 'light'}
+                onChange={(e) => onThemeChange(e.target.value)}
+                className="app-select h-8 rounded-lg px-2 text-xs font-semibold text-app-text outline-none transition"
+                aria-label={labels.theme}
               >
-                🌙
-              </button>
-              <button
-                type="button"
-                onClick={() => setSettings((prev) => ({ ...prev, darkMode: false }))}
-                className={`rounded-lg px-2 py-1 text-xs font-semibold ${!settings.darkMode ? 'bg-white/25' : 'opacity-65 hover:opacity-100'}`}
-              >
-                ☀️
-              </button>
-            </div>
+                <option value="light">☀️ {labels.lightMode}</option>
+                <option value="dark">🌙 {labels.darkMode}</option>
+              </select>
+            </label>
           </div>
         </header>
 
@@ -109,17 +113,17 @@ function App() {
 
               <MotionSection className="glass-card space-y-3 p-4" layout>
                 <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-app-muted">{labels.quickConfig}</p>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-3 gap-2 items-start">
                   {[
                     { key: 'work', label: labels.workSeconds, min: 1, max: 600 },
                     { key: 'rest', label: labels.restSeconds, min: 0, max: 600 },
                     { key: 'rounds', label: labels.rounds, min: 1, max: 100 },
                   ].map((item) => (
-                    <label key={item.key} className="space-y-2">
+                    <label key={item.key} className="flex flex-col gap-2">
                       <span className="block text-[10px] font-semibold uppercase tracking-[0.2em] text-app-muted">{item.label}</span>
                       <input
                         type="number"
-                        className="h-12 w-full rounded-2xl border border-white/10 bg-black/20 px-3 text-center text-2xl font-extrabold text-app-text outline-none focus:border-white/35 dark:bg-black/20"
+                        className="timer-number-input h-12 w-full rounded-2xl px-3 text-center text-2xl font-extrabold leading-none text-app-text outline-none [font-variant-numeric:tabular-nums]"
                         value={settings[item.key]}
                         onChange={setNum(item.key, item.min, item.max)}
                       />
@@ -130,9 +134,9 @@ function App() {
 
               <MotionSection className="glass-card space-y-3 p-4" layout>
                 <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-app-muted">{labels.countdown}</p>
-                <div className="relative grid grid-cols-4 rounded-2xl border border-white/10 bg-black/20 p-1 dark:bg-black/20">
+                <div className="countdown-group relative grid grid-cols-4 rounded-2xl p-1">
                   <MotionDiv
-                    className="absolute bottom-1 top-1 rounded-xl bg-white/15"
+                    className="countdown-active absolute bottom-1 top-1 rounded-xl"
                     animate={{ left: `calc(${countdownOptions.indexOf(settings.countdown) * 25}% + 4px)`, width: 'calc(25% - 8px)' }}
                     transition={{ type: 'spring', stiffness: 320, damping: 32 }}
                   />
@@ -141,7 +145,7 @@ function App() {
                       key={c}
                       type="button"
                       onClick={() => setSettings((prev) => ({ ...prev, countdown: c }))}
-                      className="relative z-10 rounded-xl py-2 text-sm font-bold text-app-text/85"
+                      className="relative z-10 rounded-xl py-2 text-sm font-bold text-app-subtle"
                     >
                       {c === 0 ? 'OFF' : `${c}s`}
                     </button>
@@ -168,23 +172,9 @@ function App() {
 
                 <div className="space-y-2 border-t border-white/10 pt-3">
                   <span className="text-xs text-app-subtle">{labels.voiceLanguage}</span>
-                  <div className="flex gap-2">
-                    {SUPPORTED_LANGUAGES.map((voiceLanguage) => (
-                      <button
-                        key={voiceLanguage}
-                        type="button"
-                        onClick={() => setSettings((prev) => ({ ...prev, voiceLanguage }))}
-                        className={`rounded-full border px-3 py-1.5 text-sm font-semibold ${
-                          settings.voiceLanguage === voiceLanguage
-                            ? 'border-white/30 bg-white/20 text-app-text'
-                            : 'border-white/10 bg-white/5 text-app-subtle'
-                        }`}
-                        aria-label={`${labels.voiceLanguage}: ${getTranslation(voiceLanguage).languageName}`}
-                      >
-                        {languageFlags[voiceLanguage]} {getTranslation(voiceLanguage).languageName}
-                      </button>
-                    ))}
-                  </div>
+                  <p className="text-sm font-semibold text-app-text">
+                    {languageFlags[settings.language]} {getTranslation(settings.language).languageName}
+                  </p>
                 </div>
               </MotionSection>
 
@@ -197,6 +187,7 @@ function App() {
                   phaseDuration={settings.work}
                   work={settings.work}
                   rest={settings.rest}
+                  darkMode={settings.darkMode}
                   labels={labels}
                 />
               </section>
@@ -248,6 +239,7 @@ function App() {
                       work={settings.work}
                       rest={settings.rest}
                       fullscreen
+                      darkMode={settings.darkMode}
                       labels={labels}
                     />
                   )}
