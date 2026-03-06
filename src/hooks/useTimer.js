@@ -1,6 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { nextPhase } from '../lib/timerLogic'
 
+const languageVoices = {
+  en: 'en-US',
+  fr: 'fr-FR',
+  es: 'es-ES',
+}
+
 export function useTimer(config, labels) {
   const { work, rest, rounds, countdown, voice, beep, language } = config
   const [isRunning, setIsRunning] = useState(false)
@@ -12,11 +18,7 @@ export function useTimer(config, labels) {
   const tickerRef = useRef(null)
   const voicesRef = useRef([])
 
-  const speechLocale = useMemo(() => {
-    if (language === 'fr') return 'fr-FR'
-    if (language === 'es') return 'es-ES'
-    return 'en-US'
-  }, [language])
+  const speechLocale = useMemo(() => languageVoices[language] || languageVoices.en, [language])
 
   const getVoiceForLocale = useCallback(
     (voices, locale) => {
@@ -31,18 +33,19 @@ export function useTimer(config, labels) {
   )
 
   const speak = useCallback(
-    (text, { interrupt = true } = {}) => {
+    (text, lang = speechLocale) => {
       if (!voice || !window.speechSynthesis) return
       const synthesis = window.speechSynthesis
       const utterance = new SpeechSynthesisUtterance(String(text))
       const voices = voicesRef.current.length ? voicesRef.current : synthesis.getVoices()
-      const matchingVoice = getVoiceForLocale(voices, speechLocale)
+      const matchingVoice = getVoiceForLocale(voices, lang)
 
-      utterance.lang = speechLocale
+      utterance.lang = lang
       if (matchingVoice) utterance.voice = matchingVoice
       utterance.rate = 1
+      utterance.pitch = 1
 
-      if (interrupt) synthesis.cancel()
+      synthesis.cancel()
       synthesis.resume()
       synthesis.speak(utterance)
     },
@@ -113,6 +116,8 @@ export function useTimer(config, labels) {
     if (countdown > 0) {
       setPhase('countdown')
       setRemaining(countdown)
+      speak(String(countdown))
+      beepNow()
     } else {
       setPhase('work')
       setRemaining(work)
@@ -129,11 +134,17 @@ export function useTimer(config, labels) {
     tickerRef.current = setInterval(() => {
       setRemaining((prev) => {
         if (prev > 1) {
-          if (prev <= 6) {
+          const nextSecond = prev - 1
+
+          if (phase === 'countdown') {
+            speak(String(nextSecond))
             beepNow()
-            speak(String(prev - 1))
+          } else if (nextSecond <= 5) {
+            speak(String(nextSecond))
+            beepNow()
           }
-          return prev - 1
+
+          return nextSecond
         }
 
         if (phase === 'countdown') {
