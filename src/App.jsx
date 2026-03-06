@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { CountdownAnimation } from './components/CountdownAnimation'
 import { PresetButtons } from './components/PresetButtons'
+import { LanguageSelector } from './components/LanguageSelector'
 import { TimerControls } from './components/TimerControls'
 import { TimerDisplay } from './components/TimerDisplay'
 import { WheelNumberPicker } from './components/WheelNumberPicker'
@@ -21,12 +22,6 @@ import { createShareHash, parseWorkoutFromHash } from './lib/workoutParser'
 const MotionSection = motion.section
 const MotionDiv = motion.div
 const countdownOptions = [0, 3, 5, 10]
-
-const languageFlags = {
-  en: '🇺🇸',
-  fr: '🇫🇷',
-  es: '🇪🇸',
-}
 
 function App() {
   const [deferredPrompt, setDeferredPrompt] = useState(null)
@@ -136,20 +131,12 @@ function App() {
       <div className="mx-auto flex min-h-screen w-full max-w-md flex-col gap-3 px-4 pb-4 pt-4">
         <header className="relative space-y-3">
           <div className="absolute right-0 top-0 flex items-center gap-2">
-            <div className="language-select-wrap relative w-12">
-              <select
-                value={settings.language}
-                onChange={(e) => onLanguageChange(e.target.value)}
-                className="app-select h-8 w-full rounded-lg px-0 text-center text-base font-semibold text-app-text outline-none transition"
-                aria-label={labels.language}
-              >
-                {SUPPORTED_LANGUAGES.map((language) => (
-                  <option key={language} value={language}>
-                    {languageFlags[language]}
-                  </option>
-                ))}
-              </select>
-            </div>
+            <LanguageSelector
+              value={settings.language}
+              onChange={onLanguageChange}
+              languages={SUPPORTED_LANGUAGES}
+              ariaLabel={labels.language}
+            />
 
             <button
               type="button"

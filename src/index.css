@@ -115,51 +115,129 @@ html:not(.dark) .glass-card-light {
   }
 }
 
-.app-select {
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
+.language-selector {
+  position: relative;
+}
+
+.language-trigger {
   border: 1px solid rgba(148, 163, 184, 0.28);
   background: linear-gradient(160deg, rgba(15, 23, 42, 0.48), rgba(30, 41, 59, 0.2));
-  text-align: center;
-  text-align-last: center;
-  -moz-text-align-last: center;
-  padding-inline: 0;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.18),
     0 10px 20px rgba(2, 6, 23, 0.2);
+  transition: border-color 150ms ease, transform 150ms ease;
 }
 
-.app-select option {
-  text-align: center;
-  text-align-last: center;
-  padding-inline: 0;
+.language-trigger-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
 }
 
-.app-select:hover {
+.language-trigger:hover {
   border-color: rgba(125, 211, 252, 0.42);
 }
 
-.app-select:focus {
+.language-trigger:focus-visible {
+  outline: none;
   border-color: rgba(96, 165, 250, 0.85);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.2),
     0 0 0 3px rgba(59, 130, 246, 0.22);
 }
 
-.language-select-wrap::before {
-  content: '';
+.language-menu {
   position: absolute;
-  inset: 0;
-  border-radius: 0.5rem;
-  pointer-events: none;
-  background: linear-gradient(120deg, rgba(96, 165, 250, 0.16), rgba(16, 185, 129, 0.12));
-  opacity: 0;
-  transition: opacity 150ms ease;
+  top: calc(100% + 0.5rem);
+  right: 50%;
+  transform: translateX(50%);
+  width: 13rem;
+  list-style: none;
+  margin: 0;
+  padding: 0.35rem;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(20, 20, 20, 0.8);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  z-index: 30;
 }
 
-.language-select-wrap:hover::before {
-  opacity: 1;
+.language-menu-item {
+  width: 100%;
+  border: none;
+  background: transparent;
+  color: inherit;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.65rem;
+  border-radius: 14px;
+  padding: 0.7rem 0.8rem;
+  text-align: left;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  transition: background-color 120ms ease, color 120ms ease;
+}
+
+.language-menu-item:hover,
+.language-menu-item:focus-visible {
+  background: rgba(59, 130, 246, 0.2);
+  color: #fff;
+  outline: none;
+}
+
+.language-menu-item.is-active {
+  background: rgba(14, 165, 233, 0.28);
+  color: #ffffff;
+}
+
+.language-selected-indicator {
+  min-width: 1rem;
+  text-align: right;
+  color: rgba(167, 243, 208, 0.95);
+}
+
+html:not(.dark) .language-trigger {
+  border-color: rgba(148, 163, 184, 0.5);
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.96), rgba(241, 245, 249, 0.9));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.92),
+    0 8px 18px rgba(148, 163, 184, 0.25);
+}
+
+html:not(.dark) .language-trigger:hover {
+  border-color: rgba(56, 189, 248, 0.56);
+}
+
+html:not(.dark) .language-trigger:focus-visible {
+  border-color: rgba(59, 130, 246, 0.7);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    0 0 0 3px rgba(59, 130, 246, 0.16);
+}
+
+html:not(.dark) .language-menu {
+  border-color: rgba(148, 163, 184, 0.36);
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.16);
+}
+
+html:not(.dark) .language-menu-item {
+  color: rgba(15, 23, 42, 0.88);
+}
+
+html:not(.dark) .language-menu-item:hover,
+html:not(.dark) .language-menu-item:focus-visible {
+  background: rgba(59, 130, 246, 0.14);
+  color: rgba(15, 23, 42, 0.95);
+}
+
+html:not(.dark) .language-menu-item.is-active {
+  background: rgba(14, 165, 233, 0.2);
+  color: rgba(2, 132, 199, 1);
 }
 
 .countdown-group,
@@ -202,7 +280,6 @@ html:not(.dark) .glass-card-light {
   box-shadow: 0 10px 30px rgba(255, 255, 255, 0.14);
 }
 
-html:not(.dark) .app-select,
 html:not(.dark) .countdown-group,
 html:not(.dark) .quick-config-wheel {
   border-color: rgba(148, 163, 184, 0.42);
@@ -213,25 +290,6 @@ html:not(.dark) .quick-config-wheel-highlight {
   background: rgba(255, 255, 255, 0.82);
   border-color: rgba(148, 163, 184, 0.52);
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.55);
-}
-
-html:not(.dark) .app-select {
-  border-color: rgba(148, 163, 184, 0.5);
-  background: linear-gradient(160deg, rgba(255, 255, 255, 0.96), rgba(241, 245, 249, 0.9));
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.92),
-    0 8px 18px rgba(148, 163, 184, 0.25);
-}
-
-html:not(.dark) .app-select:hover {
-  border-color: rgba(56, 189, 248, 0.56);
-}
-
-html:not(.dark) .app-select:focus {
-  border-color: rgba(59, 130, 246, 0.7);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 1),
-    0 0 0 3px rgba(59, 130, 246, 0.16);
 }
 
 html:not(.dark) .countdown-active {
