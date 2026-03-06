@@ -77,8 +77,19 @@ function App() {
   }
 
   const onPreset = (key) => {
-    const preset = PRESETS[key]
-    setSettings((prev) => ({ ...prev, preset: key, work: preset.work, rest: preset.rest, rounds: preset.rounds }))
+    if (key === 'custom') {
+      setSettings((prev) => ({ ...prev, preset: 'custom' }))
+      return
+    }
+
+    const selectedPreset = PRESETS[key]
+    setSettings((prev) => ({
+      ...prev,
+      preset: key,
+      work: selectedPreset.work,
+      rest: selectedPreset.rest,
+      rounds: selectedPreset.rounds,
+    }))
   }
 
   const setWheelValue = (key) => (value) => {
