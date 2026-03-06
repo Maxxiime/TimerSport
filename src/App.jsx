@@ -67,15 +67,9 @@ function App() {
   return (
     <main className="min-h-screen bg-app text-app-text transition-colors duration-200">
       <div className="mx-auto flex min-h-screen w-full max-w-md flex-col gap-3 px-4 pb-4 pt-4">
-        <header className="space-y-2">
-          <div className="space-y-1">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-app-muted">Fitness Interval Timer</p>
-            <h1 className="text-xl font-bold tracking-tight text-app-text">{labels.title}</h1>
-            <p className="text-xs text-app-subtle">{labels.subtitle}</p>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <div className="language-select-wrap relative flex-1">
+        <header className="relative space-y-3">
+          <div className="absolute right-0 top-0 flex items-center gap-2">
+            <div className="language-select-wrap relative w-32">
               <select
                 value={settings.language}
                 onChange={(e) => onLanguageChange(e.target.value)}
@@ -98,6 +92,12 @@ function App() {
             >
               {settings.darkMode ? '☀️' : '🌙'}
             </button>
+          </div>
+
+          <div className="space-y-1 pr-44">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-app-muted">Fitness Interval Timer</p>
+            <h1 className="text-xl font-bold tracking-tight text-app-text">{labels.title}</h1>
+            <p className="text-xs text-app-subtle">{labels.subtitle}</p>
           </div>
 
           <div className="flex flex-wrap gap-2">
