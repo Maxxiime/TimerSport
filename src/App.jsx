@@ -73,7 +73,7 @@ function App() {
               <select
                 value={settings.language}
                 onChange={(e) => onLanguageChange(e.target.value)}
-                className="app-select h-8 w-full rounded-lg px-2 text-center text-base font-semibold text-app-text outline-none transition"
+                className="app-select h-8 w-full rounded-lg px-0 text-center text-base font-semibold text-app-text outline-none transition"
                 aria-label={labels.language}
               >
                 {SUPPORTED_LANGUAGES.map((language) => (
