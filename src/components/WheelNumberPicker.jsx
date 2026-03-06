@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react'
 
-const ITEM_HEIGHT = 40
-const VISIBLE_ROWS = 5
+const ITEM_HEIGHT = 36
+const VISIBLE_ROWS = 3
 const SIDE_PADDING = ((VISIBLE_ROWS - 1) / 2) * ITEM_HEIGHT
 
 export function WheelNumberPicker({ label, value, min, max, onChange }) {
@@ -44,8 +44,8 @@ export function WheelNumberPicker({ label, value, min, max, onChange }) {
   }
 
   return (
-    <div className="flex flex-col gap-2">
-      <span className="block text-[10px] font-semibold uppercase tracking-[0.2em] text-app-muted">{label}</span>
+    <div className="flex flex-col gap-1.5">
+      <span className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-app-muted">{label}</span>
 
       <div className="quick-config-wheel-wrapper relative">
         <div className="quick-config-wheel-highlight pointer-events-none absolute inset-x-2 top-1/2 z-10 -translate-y-1/2 rounded-xl" />
@@ -56,14 +56,16 @@ export function WheelNumberPicker({ label, value, min, max, onChange }) {
           aria-label={label}
           onScroll={updateValueFromScroll}
           onKeyDown={onKeyDown}
-          className="quick-config-wheel no-scrollbar relative z-0 h-[200px] snap-y snap-mandatory overflow-y-auto rounded-2xl px-2 text-center outline-none"
+          className="quick-config-wheel no-scrollbar relative z-0 h-[116px] snap-y snap-mandatory overflow-y-scroll rounded-2xl px-1 text-center outline-none sm:h-[132px]"
           style={{ paddingTop: SIDE_PADDING, paddingBottom: SIDE_PADDING }}
         >
           {values.map((optionValue) => (
             <li
               key={optionValue}
-              className={`flex h-10 snap-center items-center justify-center text-2xl font-extrabold leading-none transition-opacity [font-variant-numeric:tabular-nums] ${
-                optionValue === value ? 'text-app-text opacity-100' : 'text-app-subtle opacity-45'
+              className={`flex h-9 snap-center items-center justify-center font-extrabold leading-none transition-all [font-variant-numeric:tabular-nums] ${
+                optionValue === value
+                  ? 'text-app-text text-3xl opacity-100'
+                  : 'text-app-subtle text-xl opacity-40'
               }`}
             >
               {optionValue}

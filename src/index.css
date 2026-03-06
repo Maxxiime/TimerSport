@@ -174,9 +174,10 @@ html:not(.dark) .glass-card-light {
 }
 
 .quick-config-wheel-highlight {
-  height: 2.5rem;
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  height: 2.25rem;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
 }
 
 .quick-config-wheel {
@@ -209,8 +210,9 @@ html:not(.dark) .quick-config-wheel {
 }
 
 html:not(.dark) .quick-config-wheel-highlight {
-  background: rgba(255, 255, 255, 0.7);
-  border-color: rgba(148, 163, 184, 0.42);
+  background: rgba(255, 255, 255, 0.82);
+  border-color: rgba(148, 163, 184, 0.52);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.55);
 }
 
 html:not(.dark) .app-select {

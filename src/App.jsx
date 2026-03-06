@@ -120,9 +120,9 @@ function App() {
             <MotionDiv initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} className="space-y-3">
               <PresetButtons selected={settings.preset} onSelect={onPreset} title={labels.presets} />
 
-              <MotionSection className="glass-card space-y-3 p-4" layout>
+              <MotionSection className="glass-card space-y-2.5 p-3.5" layout>
                 <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-app-muted">{labels.quickConfig}</p>
-                <div className="grid grid-cols-3 gap-2 items-start">
+                <div className="grid grid-cols-3 items-start gap-1.5">
                   {[
                     { key: 'work', label: labels.workSeconds, min: 1, max: 600 },
                     { key: 'rest', label: labels.restSeconds, min: 0, max: 600 },
