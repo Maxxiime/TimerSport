@@ -21,6 +21,12 @@ const languageFlags = {
   es: '🇪🇸',
 }
 
+const languageTags = {
+  en: 'US',
+  fr: 'FR',
+  es: 'ES',
+}
+
 function App() {
   const hashPreset = parseWorkoutFromHash(window.location.hash)
   const [settings, setSettings] = useState({ ...loadSettings(), ...hashPreset })
@@ -33,8 +39,8 @@ function App() {
     setSettings((prev) => ({ ...prev, language, voiceLanguage: language }))
   }
 
-  const onThemeChange = (theme) => {
-    setSettings((prev) => ({ ...prev, darkMode: theme === 'dark' }))
+  const toggleTheme = () => {
+    setSettings((prev) => ({ ...prev, darkMode: !prev.darkMode }))
   }
 
   useEffect(() => {
@@ -74,35 +80,28 @@ function App() {
             <p className="text-xs text-app-subtle">{labels.subtitle}</p>
           </div>
 
-          <div className="grid grid-cols-2 gap-2">
-            <label className="glass-card-light flex min-w-[88px] flex-col gap-1 p-1.5">
-              <span className="px-1 text-[9px] font-semibold uppercase tracking-[0.2em] text-app-muted">{labels.language}</span>
-              <select
-                value={settings.language}
-                onChange={(e) => onLanguageChange(e.target.value)}
-                className="app-select h-8 rounded-lg px-2 text-xs font-semibold text-app-text outline-none transition"
-                aria-label={labels.language}
-              >
-                {SUPPORTED_LANGUAGES.map((language) => (
-                  <option key={language} value={language}>
-                    {languageFlags[language]} {getTranslation(language).languageName}
-                  </option>
-                ))}
-              </select>
-            </label>
+          <div className="flex items-center gap-2">
+            <select
+              value={settings.language}
+              onChange={(e) => onLanguageChange(e.target.value)}
+              className="app-select h-8 rounded-lg px-2 text-xs font-semibold text-app-text outline-none transition"
+              aria-label={labels.language}
+            >
+              {SUPPORTED_LANGUAGES.map((language) => (
+                <option key={language} value={language}>
+                  {languageFlags[language]} {languageTags[language]}
+                </option>
+              ))}
+            </select>
 
-            <label className="glass-card-light flex min-w-[88px] flex-col gap-1 p-1.5">
-              <span className="px-1 text-[9px] font-semibold uppercase tracking-[0.2em] text-app-muted">{labels.theme}</span>
-              <select
-                value={settings.darkMode ? 'dark' : 'light'}
-                onChange={(e) => onThemeChange(e.target.value)}
-                className="app-select h-8 rounded-lg px-2 text-xs font-semibold text-app-text outline-none transition"
-                aria-label={labels.theme}
-              >
-                <option value="light">☀️ {labels.lightMode}</option>
-                <option value="dark">🌙 {labels.darkMode}</option>
-              </select>
-            </label>
+            <button
+              type="button"
+              onClick={toggleTheme}
+              className="grid h-8 w-8 place-items-center rounded-lg text-lg leading-none text-app-text transition hover:bg-white/10"
+              aria-label={settings.darkMode ? labels.lightMode : labels.darkMode}
+            >
+              {settings.darkMode ? '☀️' : '🌙'}
+            </button>
           </div>
         </header>
 
