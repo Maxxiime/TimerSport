@@ -117,7 +117,6 @@ html:not(.dark) .glass-card-light {
 
 .app-select {
   appearance: none;
-  min-width: 112px;
   border: 1px solid rgba(148, 163, 184, 0.28);
   background: linear-gradient(160deg, rgba(15, 23, 42, 0.48), rgba(30, 41, 59, 0.2));
   box-shadow:

@@ -69,16 +69,16 @@ function App() {
       <div className="mx-auto flex min-h-screen w-full max-w-md flex-col gap-3 px-4 pb-4 pt-4">
         <header className="relative space-y-3">
           <div className="absolute right-0 top-0 flex items-center gap-2">
-            <div className="language-select-wrap relative w-32">
+            <div className="language-select-wrap relative w-14">
               <select
                 value={settings.language}
                 onChange={(e) => onLanguageChange(e.target.value)}
-                className="app-select h-8 w-full rounded-lg py-1 pl-2.5 pr-7 text-xs font-semibold text-app-text outline-none transition"
+                className="app-select h-8 w-full rounded-lg px-2 pr-6 text-center text-base font-semibold text-app-text outline-none transition"
                 aria-label={labels.language}
               >
                 {SUPPORTED_LANGUAGES.map((language) => (
                   <option key={language} value={language}>
-                    {languageFlags[language]} {language.toUpperCase()}
+                    {languageFlags[language]}
                   </option>
                 ))}
               </select>
