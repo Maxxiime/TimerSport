@@ -1,6 +1,6 @@
-import { m } from 'framer-motion'
+import { motion } from 'framer-motion'
 
-const MotionButton = m.button
+const MotionButton = motion.button
 
 export function TimerControls({ isRunning, isPaused, onStart, onPause, onResume, onReset, labels, overlay = false }) {
   if (!isRunning) {

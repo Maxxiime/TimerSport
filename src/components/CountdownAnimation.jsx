@@ -1,6 +1,6 @@
-import { AnimatePresence, m } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 
-const MotionDiv = m.div
+const MotionDiv = motion.div
 
 export function CountdownAnimation({ value }) {
   const label = value === 0 ? 'GO' : value

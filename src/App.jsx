@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { AnimatePresence, m } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import { CountdownAnimation } from './components/CountdownAnimation'
 import { PresetButtons } from './components/PresetButtons'
 import { TimerControls } from './components/TimerControls'
@@ -11,8 +11,8 @@ import { loadSettings, saveSettings } from './lib/storage'
 import { PRESETS } from './lib/timerLogic'
 import { createShareHash, parseWorkoutFromHash } from './lib/workoutParser'
 
-const MotionSection = m.section
-const MotionDiv = m.div
+const MotionSection = motion.section
+const MotionDiv = motion.div
 const countdownOptions = [0, 3, 5, 10]
 
 function App() {
