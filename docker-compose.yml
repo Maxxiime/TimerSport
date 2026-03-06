@@ -1,0 +1,7 @@
+services:
+  timersport:
+    build: .
+    container_name: timersport
+    ports:
+      - "4000:80"
+    restart: unless-stopped
