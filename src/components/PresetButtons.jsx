@@ -1,7 +1,7 @@
-import { m } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { PRESETS } from '../lib/timerLogic'
 
-const MotionButton = m.button
+const MotionButton = motion.button
 
 export function PresetButtons({ selected, onSelect, title }) {
   return (

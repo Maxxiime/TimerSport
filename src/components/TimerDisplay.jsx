@@ -1,8 +1,8 @@
-import { m } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { formatTime, nextPhase } from '../lib/timerLogic'
 
-const MotionDiv = m.div
-const MotionCircle = m.circle
+const MotionDiv = motion.div
+const MotionCircle = motion.circle
 
 export function TimerDisplay({ phase, remaining, round, rounds, phaseDuration, work, rest, fullscreen = false, labels }) {
   const safeDuration = Math.max(1, phaseDuration)
