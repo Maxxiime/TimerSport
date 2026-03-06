@@ -1,44 +1,96 @@
 # TimerSport
 
-Application React + Vite pour des entraînements chronométrés.
+## 1. Project description
 
-## Prérequis
+TimerSport is a mobile-friendly fitness timer built for gym and crossfit workouts. It is a React + Vite application designed to run as a static frontend in production.
 
-- **Node.js 20+** (recommandé: Node 20 LTS)
-- npm 10+
+## 2. Requirements
 
-Ce projet dépend de paquets (`workbox-build`, `glob@11`, etc.) qui demandent Node 20 minimum.
-Avec Node 18, l'installation est maintenant bloquée automatiquement avec un message explicite.
+Before deploying with Docker, make sure you have:
 
-## Installation
+- Docker
+- Docker Compose
 
-```bash
-nvm use   # lit .nvmrc (Node 20)
-npm ci
-```
+## 3. Quick start (Docker Compose – recommended)
 
-## Lancement en développement
+The fastest and recommended way to deploy TimerSport is with Docker Compose.
 
 ```bash
-npm run dev -- --host 0.0.0.0 --port 4000
+git clone https://github.com/Maxxiime/TimerSport.git
+cd TimerSport
+docker compose up -d --build
 ```
 
-## Build de production
+Once started, the application is available at:
+
+```text
+http://SERVER_IP:4270
+```
+
+> If you run locally, you can use `http://localhost:4270`.
+
+## 4. Updating the application
+
+To update to the latest code and redeploy:
 
 ```bash
-npm run build
+git pull
+docker compose up -d --build
 ```
 
-## Dépannage
+## 5. Manual Docker build (without compose)
 
-### Erreur console `content.js ... reading 'runtime'`
+If you prefer not to use Compose:
 
-Si l'erreur vient d'un fichier nommé `content.js` (sans chemin de votre projet), elle provient en général d'une **extension navigateur** injectée dans la page (pas de l'application TimerSport).
+```bash
+docker build -t timersport .
+docker run -d -p 4270:80 --name timersport timersport
+```
 
-Vérifications rapides:
+## 6. Changing the exposed port
 
-1. Ouvrir l'app en navigation privée **sans extensions**.
-2. Désactiver temporairement les extensions (adblock, wallet, traducteur, etc.).
-3. Tester dans un autre navigateur propre.
+The container serves the app on port `80` internally. In `docker-compose.yml`, change the host port in the `ports` section:
 
-Si l'erreur disparaît, le code de l'application n'est pas en cause.
+```yaml
+ports:
+  - "PORT:80"
+```
+
+Example (host port `5000`):
+
+```yaml
+ports:
+  - "5000:80"
+```
+
+Then restart with:
+
+```bash
+docker compose up -d --build
+```
+
+## 7. Stopping the container
+
+```bash
+docker compose down
+```
+
+## 8. Rebuilding cleanly
+
+If you want a clean rebuild of images:
+
+```bash
+docker compose down
+docker builder prune -f
+docker compose up -d --build
+```
+
+## 9. Production notes
+
+This repository includes a production-ready Docker setup:
+
+- A multi-stage Docker build
+- `npm run build` compiles the Vite application
+- The final image uses `nginx:alpine` to serve static files from `/dist`
+- The container exposes port `80`
+- The resulting image is lightweight and suitable for production deployments (including Docker hosts and Portainer)
