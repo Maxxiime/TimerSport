@@ -11,7 +11,6 @@ A fast, mobile-first workout timer for gym and crossfit training. Designed to ru
 
 ![TimerSport Screenshot](docs/screenshot.png)
 
-> Replace `docs/screenshot.png` with a real screenshot of your TimerSport UI to showcase your setup.
 
 ## 🚀 Features
 
