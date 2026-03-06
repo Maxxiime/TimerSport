@@ -82,23 +82,24 @@ function App() {
                 className="app-select h-8 w-full rounded-lg py-1 pl-2.5 pr-7 text-xs font-semibold text-app-text outline-none transition"
                 aria-label={labels.language}
               >
-                {SUPPORTED_LANGUAGES.map((language) => (
-                  <option key={language} value={language}>
-                    {languageFlags[language]} {getTranslation(language).languageName}
-                  </option>
-                ))}
-              </select>
-              <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-app-subtle">▾</span>
+                {settings.darkMode ? '☀️' : '🌙'}
+              </button>
             </div>
 
-            <button
-              type="button"
-              onClick={toggleTheme}
-              className="grid h-8 w-8 place-items-center rounded-lg text-lg leading-none text-app-text transition hover:bg-white/10"
-              aria-label={settings.darkMode ? labels.lightMode : labels.darkMode}
-            >
-              {settings.darkMode ? '☀️' : '🌙'}
-            </button>
+            <div className="flex flex-wrap justify-end gap-2">
+              {toggleChips.map(([key, label]) => (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => setSettings((prev) => ({ ...prev, [key]: !prev[key] }))}
+                  className={`rounded-full border px-3 py-2 text-xs font-semibold ${
+                    settings[key] ? 'border-white/30 bg-white/20 text-app-text' : 'border-white/10 bg-white/5 text-app-subtle'
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
           </div>
 
           <div className="flex flex-wrap gap-2">
