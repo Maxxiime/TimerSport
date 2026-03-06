@@ -1,83 +1,116 @@
 # TimerSport
 
-## 1. Project description
+A fast, mobile-first workout timer for gym and crossfit training. Designed to run as a lightweight web app or Docker container.
 
-TimerSport is a mobile-friendly fitness timer built for gym and crossfit workouts. It is a React + Vite application designed to run as a static frontend in production.
+[![GitHub Repo](https://img.shields.io/badge/github-Maxxiime%2FTimerSport-181717?logo=github)](https://github.com/Maxxiime/TimerSport)
+![Docker](https://img.shields.io/badge/docker-ready-2496ED?logo=docker&logoColor=white)
+![License](https://img.shields.io/badge/license-MIT-green)
+![Node](https://img.shields.io/badge/node-%3E%3D18-339933?logo=node.js&logoColor=white)
 
-## 2. Requirements
+## 📸 Screenshot
 
-Before deploying with Docker, make sure you have:
+![TimerSport Screenshot](docs/screenshot.png)
 
-- Docker
-- Docker Compose
+> Replace `docs/screenshot.png` with a real screenshot of your TimerSport UI to showcase your setup.
 
-## 3. Quick start (Docker Compose – recommended)
+## 🚀 Features
 
-The fastest and recommended way to deploy TimerSport is with Docker Compose.
+- Mobile-first UI optimized for phone screens
+- Gym / Crossfit workout presets
+- Countdown voice cues
+- Work / Rest interval support
+- Progressive timer circle animation
+- Voice countdown in multiple languages
+- PWA support (installable on phone)
+- Lightweight and fast performance
+- Docker-ready deployment
+
+## ⚡ Quick Start (Docker Compose)
+
+The fastest way to run TimerSport is with Docker Compose.
+
+### 1️⃣ Clone the repository
 
 ```bash
 git clone https://github.com/Maxxiime/TimerSport.git
 cd TimerSport
+```
+
+### 2️⃣ Start the container
+
+```bash
 docker compose up -d --build
 ```
 
-Once started, the application is available at:
+### 3️⃣ Open the app
 
 ```text
 http://SERVER_IP:4270
 ```
 
-> If you run locally, you can use `http://localhost:4270`.
+> For local use: `http://localhost:4270`
 
-## 4. Updating the application
-
-To update to the latest code and redeploy:
+## 🔄 Updating the container
 
 ```bash
 git pull
 docker compose up -d --build
 ```
 
-## 5. Manual Docker build (without compose)
-
-If you prefer not to use Compose:
+## 🐳 Manual Docker Build
 
 ```bash
 docker build -t timersport .
-docker run -d -p 4270:80 --name timersport timersport
+docker run -d -p 4270:80 timersport
 ```
 
-## 6. Changing the exposed port
+The app will be available at:
 
-The container serves the app on port `80` internally. In `docker-compose.yml`, change the host port in the `ports` section:
+```text
+http://localhost:4270
+```
+
+## 🔧 Changing the port
+
+Edit `docker-compose.yml` and update the `ports` mapping.
+
+Current mapping:
 
 ```yaml
 ports:
-  - "PORT:80"
+  - "4270:80"
 ```
 
-Example (host port `5000`):
+Example using port `5000`:
 
 ```yaml
 ports:
   - "5000:80"
 ```
 
-Then restart with:
+Then redeploy:
 
 ```bash
 docker compose up -d --build
 ```
 
-## 7. Stopping the container
+## 📦 Deploy with Portainer
+
+1. Open Portainer.
+2. Create a new **Stack**.
+3. Use the repository URL: `https://github.com/Maxxiime/TimerSport.git`.
+4. Select `docker-compose.yml`.
+5. Click **Deploy the stack**.
+
+Portainer will automatically build and run the container.
+
+## 🛑 Stop the container
 
 ```bash
 docker compose down
 ```
 
-## 8. Rebuilding cleanly
-
-If you want a clean rebuild of images:
+## 🧹 Clean rebuild
 
 ```bash
 docker compose down
@@ -85,12 +118,30 @@ docker builder prune -f
 docker compose up -d --build
 ```
 
-## 9. Production notes
+## 📂 Project structure
 
-This repository includes a production-ready Docker setup:
+```text
+src/
+public/
+Dockerfile
+docker-compose.yml
+vite.config.js
+```
 
-- A multi-stage Docker build
-- `npm run build` compiles the Vite application
-- The final image uses `nginx:alpine` to serve static files from `/dist`
-- The container exposes port `80`
-- The resulting image is lightweight and suitable for production deployments (including Docker hosts and Portainer)
+TimerSport is built using:
+
+- React
+- Vite
+- Tailwind
+- Docker
+- Nginx
+
+## 🤝 Contributing
+
+Contributions are welcome! Feel free to open an issue for ideas/bugs or submit a pull request with improvements.
+
+## 📜 License
+
+MIT
+
+If you find TimerSport useful, consider contributing to help improve the project.
