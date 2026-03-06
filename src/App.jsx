@@ -77,12 +77,14 @@ function App() {
   }
 
   const onPreset = (key) => {
+    const selectedPreset = PRESETS[key]
+    if (!selectedPreset) return
+
     if (key === 'custom') {
       setSettings((prev) => ({ ...prev, preset: 'custom' }))
       return
     }
 
-    const selectedPreset = PRESETS[key]
     setSettings((prev) => ({
       ...prev,
       preset: key,
