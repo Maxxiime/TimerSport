@@ -21,12 +21,6 @@ const languageFlags = {
   es: '🇪🇸',
 }
 
-const languageTags = {
-  en: 'US',
-  fr: 'FR',
-  es: 'ES',
-}
-
 function App() {
   const hashPreset = parseWorkoutFromHash(window.location.hash)
   const [settings, setSettings] = useState({ ...loadSettings(), ...hashPreset })
@@ -81,18 +75,21 @@ function App() {
           </div>
 
           <div className="flex items-center gap-2">
-            <select
-              value={settings.language}
-              onChange={(e) => onLanguageChange(e.target.value)}
-              className="app-select h-8 rounded-lg px-2 text-xs font-semibold text-app-text outline-none transition"
-              aria-label={labels.language}
-            >
-              {SUPPORTED_LANGUAGES.map((language) => (
-                <option key={language} value={language}>
-                  {languageFlags[language]} {languageTags[language]}
-                </option>
-              ))}
-            </select>
+            <div className="language-select-wrap relative">
+              <select
+                value={settings.language}
+                onChange={(e) => onLanguageChange(e.target.value)}
+                className="app-select h-8 rounded-lg py-1 pl-2.5 pr-7 text-xs font-semibold text-app-text outline-none transition"
+                aria-label={labels.language}
+              >
+                {SUPPORTED_LANGUAGES.map((language) => (
+                  <option key={language} value={language}>
+                    {languageFlags[language]} {getTranslation(language).languageName}
+                  </option>
+                ))}
+              </select>
+              <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-app-subtle">▾</span>
+            </div>
 
             <button
               type="button"
@@ -169,12 +166,6 @@ function App() {
                   ))}
                 </div>
 
-                <div className="space-y-2 border-t border-white/10 pt-3">
-                  <span className="text-xs text-app-subtle">{labels.voiceLanguage}</span>
-                  <p className="text-sm font-semibold text-app-text">
-                    {languageFlags[settings.language]} {getTranslation(settings.language).languageName}
-                  </p>
-                </div>
               </MotionSection>
 
               <section className="glass-card p-3">
