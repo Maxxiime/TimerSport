@@ -6,7 +6,6 @@
 
 :root {
   font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-  color: #fff;
 }
 
 * {
@@ -16,10 +15,19 @@
 body {
   margin: 0;
   min-height: 100vh;
+  color: #f6f8fb;
   background:
     radial-gradient(circle at 15% 10%, rgba(96, 165, 250, 0.13), transparent 35%),
     radial-gradient(circle at 80% 0%, rgba(34, 197, 94, 0.11), transparent 35%),
     linear-gradient(180deg, #101217 0%, #0a0c10 80%);
+}
+
+html:not(.dark) body {
+  color: #0f172a;
+  background:
+    radial-gradient(circle at 15% 10%, rgba(59, 130, 246, 0.1), transparent 36%),
+    radial-gradient(circle at 80% 0%, rgba(16, 185, 129, 0.08), transparent 34%),
+    linear-gradient(180deg, #f8fbff 0%, #edf3fa 85%);
 }
 
 #root {
@@ -33,12 +41,57 @@ body {
     linear-gradient(180deg, #11131a, #090b10 80%);
 }
 
+html:not(.dark) .bg-app {
+  background:
+    radial-gradient(circle at 10% 0%, rgba(59, 130, 246, 0.14), transparent 34%),
+    radial-gradient(circle at 90% 8%, rgba(16, 185, 129, 0.12), transparent 28%),
+    linear-gradient(180deg, #f8fbff 0%, #edf3fa 84%);
+}
+
+.text-app-text {
+  color: #f8fafc;
+}
+
+.text-app-muted {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.text-app-subtle {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+html:not(.dark) .text-app-text {
+  color: #0f172a;
+}
+
+html:not(.dark) .text-app-muted {
+  color: rgba(15, 23, 42, 0.55);
+}
+
+html:not(.dark) .text-app-subtle {
+  color: rgba(15, 23, 42, 0.7);
+}
+
 .glass-card {
   border-radius: 24px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(255, 255, 255, 0.06);
   backdrop-filter: blur(12px);
   box-shadow: 0 14px 36px rgba(0, 0, 0, 0.3);
+}
+
+.glass-card-light {
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+}
+
+html:not(.dark) .glass-card,
+html:not(.dark) .glass-card-light {
+  border-color: rgba(15, 23, 42, 0.14);
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 10px 26px rgba(15, 23, 42, 0.08);
 }
 
 .no-scrollbar::-webkit-scrollbar {

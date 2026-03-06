@@ -14,9 +14,8 @@ export const defaultSettings = {
   rounds: 10,
   countdown: 3,
   voice: false,
+  voiceLanguage: detectLanguage(),
   beep: true,
-  vibration: true,
-  gymMode: true,
   darkMode: detectDarkMode(),
   language: detectLanguage(),
 }
