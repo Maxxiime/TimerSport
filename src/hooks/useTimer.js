@@ -33,16 +33,18 @@ export function useTimer(config, labels) {
   const speak = useCallback(
     (text, { interrupt = true } = {}) => {
       if (!voice || !window.speechSynthesis) return
+      const synthesis = window.speechSynthesis
       const utterance = new SpeechSynthesisUtterance(String(text))
-      const voices = voicesRef.current.length ? voicesRef.current : window.speechSynthesis.getVoices()
+      const voices = voicesRef.current.length ? voicesRef.current : synthesis.getVoices()
       const matchingVoice = getVoiceForLocale(voices, speechLocale)
 
       utterance.lang = speechLocale
       if (matchingVoice) utterance.voice = matchingVoice
       utterance.rate = 1
 
-      if (interrupt) window.speechSynthesis.cancel()
-      window.speechSynthesis.speak(utterance)
+      if (interrupt) synthesis.cancel()
+      synthesis.resume()
+      synthesis.speak(utterance)
     },
     [voice, speechLocale, getVoiceForLocale],
   )
@@ -102,6 +104,12 @@ export function useTimer(config, labels) {
     setIsRunning(true)
     setIsPaused(false)
     setRound(1)
+
+    if (window.speechSynthesis) {
+      window.speechSynthesis.cancel()
+      window.speechSynthesis.resume()
+    }
+
     if (countdown > 0) {
       setPhase('countdown')
       setRemaining(countdown)
@@ -123,7 +131,7 @@ export function useTimer(config, labels) {
         if (prev > 1) {
           if (prev <= 6) {
             beepNow()
-            speak(String(prev - 1), { interrupt: false })
+            speak(String(prev - 1))
           }
           return prev - 1
         }
