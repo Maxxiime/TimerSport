@@ -16,6 +16,7 @@ export const defaultSettings = {
   voice: false,
   beep: true,
   vibration: true,
+  gymMode: true,
   darkMode: detectDarkMode(),
   language: detectLanguage(),
 }

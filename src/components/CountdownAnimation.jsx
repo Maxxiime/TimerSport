@@ -9,11 +9,11 @@ export function CountdownAnimation({ value }) {
     <AnimatePresence mode="wait">
       <MotionDiv
         key={label}
-        initial={{ scale: 0.5, opacity: 0 }}
-        animate={{ scale: [0.8, 1.08, 1], opacity: 1 }}
-        exit={{ scale: 1.45, opacity: 0 }}
-        transition={{ duration: 0.5, ease: 'easeOut' }}
-        className="text-center text-[clamp(5rem,30vw,13rem)] font-black text-white"
+        initial={{ scale: 0.6, opacity: 0 }}
+        animate={{ scale: [0.82, 1.06, 1], opacity: 1 }}
+        exit={{ scale: 1.34, opacity: 0 }}
+        transition={{ duration: 0.45, ease: 'easeOut' }}
+        className="text-center text-[clamp(5rem,26vw,11rem)] font-extrabold text-white"
       >
         {label}
       </MotionDiv>
